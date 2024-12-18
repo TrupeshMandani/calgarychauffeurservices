@@ -1,11 +1,11 @@
-'use client'
-
-import { useState } from 'react'
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import Image from 'next/image'
+"use client";
+import { useState, useRef, useEffect } from 'react';
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import Image from 'next/image';
+import { Autocomplete, LoadScript } from '@react-google-maps/api';
 
 // Mock data for available cars
 const availableCars = [
@@ -15,19 +15,58 @@ const availableCars = [
   { id: 4, name: "Electric Vehicle", price: 130, image: "/placeholder.svg?height=200&width=300", premium: true },
   { id: 5, name: "Convertible", price: 140, image: "/placeholder.svg?height=200&width=300", premium: true },
   { id: 6, name: "Compact Car", price: 80, image: "/placeholder.svg?height=200&width=300", premium: false },
-]
+];
 
-export default function BookingPage() {
-  const [showCars, setShowCars] = useState(false)
-  const [pickupDate, setPickupDate] = useState('')
-  const [pickupTime, setPickupTime] = useState('')
-  const [dropoffDate, setDropoffDate] = useState('')
-  const [dropoffTime, setDropoffTime] = useState('')
+const BookingPage = () => {
+  const [showCars, setShowCars] = useState(false);
+  const [pickupDate, setPickupDate] = useState('');
+  const [pickupTime, setPickupTime] = useState('');
+  const [dropoffDate, setDropoffDate] = useState('');
+  const [dropoffTime, setDropoffTime] = useState('');
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [dropoffLocation, setDropoffLocation] = useState('');
+
+  const autocompleteRefPickup = useRef<any>(null);
+  const autocompleteRefDropoff = useRef<any>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    }
+  }, []);
+
+  // Handler for pickup location
+  const handlePickupLocationChange = () => {
+    if (autocompleteRefPickup.current) {
+      const place = autocompleteRefPickup.current.getPlace();
+      setPickupLocation(place.formatted_address);
+    }
+  };
+
+  // Handler for dropoff location
+  const handleDropoffLocationChange = () => {
+    if (autocompleteRefDropoff.current) {
+      const place = autocompleteRefDropoff.current.getPlace();
+      setDropoffLocation(place.formatted_address);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setShowCars(true)
-  }
+    e.preventDefault();
+    setShowCars(true);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -39,11 +78,37 @@ export default function BookingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="pickup">Pickup Location</Label>
-                <Input id="pickup" placeholder="Enter pickup location" required />
+                <LoadScript googleMapsApiKey="AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI" libraries={["places"]}>
+                  <Autocomplete
+                    onPlaceChanged={handlePickupLocationChange}
+                    ref={autocompleteRefPickup}
+                  >
+                    <Input
+                      id="pickup"
+                      placeholder="Enter pickup location"
+                      value={pickupLocation}
+                      onChange={(e) => setPickupLocation(e.target.value)}
+                      required
+                    />
+                  </Autocomplete>
+                </LoadScript>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dropoff">Drop-off Location</Label>
-                <Input id="dropoff" placeholder="Enter drop-off location" required />
+                <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY" libraries={["places"]}>
+                  <Autocomplete
+                    onPlaceChanged={handleDropoffLocationChange}
+                    ref={autocompleteRefDropoff}
+                  >
+                    <Input
+                      id="dropoff"
+                      placeholder="Enter drop-off location"
+                      value={dropoffLocation}
+                      onChange={(e) => setDropoffLocation(e.target.value)}
+                      required
+                    />
+                  </Autocomplete>
+                </LoadScript>
               </div>
             </div>
 
@@ -129,5 +194,7 @@ export default function BookingPage() {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
+
+export default BookingPage;
