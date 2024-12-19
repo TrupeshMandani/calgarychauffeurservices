@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 const NavBar: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [showModal, setShowModal] = useState(false);
   const auth = getAuth(firebaseApp);
   const router = useRouter();
 
@@ -18,11 +19,16 @@ const NavBar: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut(auth);
-    router.push("/"); // Redirect to home after logout
+    setShowModal(false);
+    router.replace("/"); // Replace the current entry in the history stack
+  };
+
+  const handleProfileClick = () => {
+    setShowModal(true);
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-white shadow-lg relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
@@ -47,20 +53,20 @@ const NavBar: React.FC = () => {
             <a href="/ContactUs" className="text-gray-700 hover:text-blue-600">
               Contact
             </a>
+            <a
+              href="/BookingPage"
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+            >
+              Book Now
+            </a>
+
             {user ? (
-              <div className="flex items-center space-x-4">
-                <img
-                  src={user.photoURL || "/default-user.png"}
-                  alt="User"
-                  className="w-8 h-8 rounded-full"
-                />
-                <button
-                  onClick={handleSignOut}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600"
-                >
-                  Sign Out
-                </button>
-              </div>
+              <img
+                src={user.photoURL || "/default-user.png"}
+                alt="User"
+                className="w-8 h-8 rounded-full cursor-pointer"
+                onClick={handleProfileClick}
+              />
             ) : (
               <a
                 href="/LogInPage"
@@ -72,6 +78,32 @@ const NavBar: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Stylish Logout Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+            <p className="mb-6 text-gray-700">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Yes, Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
