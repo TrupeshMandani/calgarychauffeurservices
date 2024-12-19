@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ const BookingPage = () => {
   const autocompleteRefPickup = useRef<any>(null);
   const autocompleteRefDropoff = useRef<any>(null);
 
-  const router = useRouter(); // Initialize useRouter for navigation
+  const router = useRouter();
 
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
@@ -59,15 +59,15 @@ const BookingPage = () => {
           </div>
 
           {/* Booking Form on Right Side */}
-          <div className="w-full max-w-2xl bg-white shadow-2xl rounded-lg p-8">
-            <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">
+          <div className="w-full max-w-lg bg-white shadow-2xl rounded-lg p-6 md:p-8">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-600">
               Calgary Chauffeur Service
             </h1>
 
             <Card>
               <CardContent>
                 <form className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="pickup">Pickup Location</Label>
                       <Autocomplete
@@ -100,7 +100,7 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="pickupDate">Pickup Date</Label>
                       <Input
@@ -123,7 +123,7 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="dropoffDate">Drop-off Date</Label>
                       <Input
@@ -145,10 +145,11 @@ const BookingPage = () => {
                       />
                     </div>
                   </div>
+
                   <Link href="/Vehicles">
                     <Button
                       type="submit"
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2"
                     >
                       Search Available Cars
                     </Button>
