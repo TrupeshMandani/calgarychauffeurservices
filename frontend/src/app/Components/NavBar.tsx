@@ -6,7 +6,7 @@ const NavBar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <h1 className="text-2xl font-bold text-blue-600">LuxeRide</h1>
+            <h1 className="text-2xl font-bold text-blue-600">Chauffeur</h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="/" className="text-gray-700 hover:text-blue-600">
@@ -24,7 +24,10 @@ const NavBar: React.FC = () => {
             <a href="/ContactUs" className="text-gray-700 hover:text-blue-600">
               Contact
             </a>
-            <a  href="/BookingPage" className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700">
+            <a
+              href="/BookingPage"
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+            >
               Book Now
             </a>
             <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700">
