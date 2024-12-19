@@ -30,9 +30,9 @@ const NavBar: React.FC = () => {
             >
               Book Now
             </a>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700">
+            <a href="/LogInPage" className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700">
               Sign In
-            </button>
+            </a>
           </div>
         </div>
       </div>
