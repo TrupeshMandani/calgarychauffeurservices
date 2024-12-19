@@ -1,15 +1,11 @@
 "use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // Use useRouter from Next.js
-import { firebaseApp } from "../_utils/Firebase";
+aseApp } from "../_utils/Firebase";
 import {
   getAuth,
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  updateProfile,
+
 } from "firebase/auth";
 import "tailwindcss/tailwind.css";
 
@@ -28,9 +24,7 @@ const LoginPage = () => {
 
   const auth = getAuth(firebaseApp);
   const googleProvider = new GoogleAuthProvider();
-  const router = useRouter(); // Initialize useRouter for navigation
 
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -38,7 +32,7 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful!");
-      router.push("/PaymentPage"); // Redirect to the payment page
+
     } catch (err) {
       console.error("Email login error: ", err);
       setError("Failed to log in. Please check your credentials.");
@@ -54,7 +48,7 @@ const LoginPage = () => {
     try {
       await signInWithPopup(auth, googleProvider);
       alert("Login successful with Google!");
-      router.push("/PaymentPage"); // Redirect to the payment page
+
     } catch (err) {
       console.error("Google login error: ", err);
       setError("Failed to log in with Google.");
@@ -66,14 +60,7 @@ const LoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">Calgary Chauffeur Service</h2>
-        <p className="text-center text-sm text-gray-500 mb-6">Log in to continue</p>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        {/* Email Login Form */}
-        <form onSubmit={handleEmailLogin}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">Email address</label>
             <input
               type="email"
               id="email"
@@ -83,8 +70,7 @@ const LoginPage = () => {
               required
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700">Password</label>
+
             <input
               type="password"
               id="password"
@@ -94,26 +80,17 @@ const LoginPage = () => {
               required
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-2 bg-orange-500 text-white font-semibold rounded-lg"
+            className="w-full py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Log in"}
           </button>
         </form>
 
-        {/* Google Sign-in Button */}
-        <div className="mt-4 text-center">
-          <p>OR</p>
-          <div className="flex justify-center mt-2">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg"
-            >
-              Continue with Google
-            </button>
-          </div>
+
         </div>
       </div>
     </div>
