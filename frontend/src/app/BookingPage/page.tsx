@@ -1,28 +1,17 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
-import CarCard from "../Components/CarCard";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import Link from "next/link";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI" || "";
+const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 
 const BookingPage = () => {
-  const [showCars, setShowCars] = useState(false);
-  const [cars, setCars] = useState<any[]>([]);
-  const [filteredCars, setFilteredCars] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [carTypeFilter, setCarTypeFilter] = useState<string>("All");
-
   const [pickupDate, setPickupDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
@@ -33,37 +22,39 @@ const BookingPage = () => {
   const autocompleteRefPickup = useRef<any>(null);
   const autocompleteRefDropoff = useRef<any>(null);
 
-  const fetchCars = async () => {
-    setLoading(true);
-    setError(null);
+  const router = useRouter(); // Initialize useRouter for navigation
 
-    try {
-      const response = await fetch("/api/cars");
-      if (!response.ok) {
-        throw new Error("Failed to fetch cars");
-      }
-      const data = await response.json();
-      setCars(data);
-      setFilteredCars(data);
-      setShowCars(true);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
+  const handlePickupLocationChange = () => {
+    const place = autocompleteRefPickup.current?.getPlace();
+    if (place && place.formatted_address) {
+      setPickupLocation(place.formatted_address);
+    }
+  };
+
+  const handleDropoffLocationChange = () => {
+    const place = autocompleteRefDropoff.current?.getPlace();
+    if (place && place.formatted_address) {
+      setDropoffLocation(place.formatted_address);
     }
   };
 
   return (
     <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-      <div className="relative h-screen bg-cover bg-center" style={{ backgroundImage: "url('/images/car-background.jpg')" }}>
+      <div
+        className="relative h-screen bg-cover bg-center"
+        style={{ backgroundImage: "url('/carbg3.jpg')" }}
+      >
         <div className="absolute inset-0 bg-black opacity-40"></div>
 
         <div className="container mx-auto p-4 relative z-10 flex justify-between h-full items-center">
           {/* Animated Text on Left Side */}
           <div className="max-w-md text-white space-y-6 animate-fadeIn">
-            <h1 className="text-5xl font-bold animate-bounce">Your Journey Begins Here</h1>
+            <h1 className="text-5xl font-bold animate-bounce">
+              Your Journey Begins Here
+            </h1>
             <p className="text-lg">
-              Book your ride effortlessly and explore new destinations with Lucky Car Booking.
+              Book your ride effortlessly and explore new destinations with
+              Lucky Car Booking.
             </p>
           </div>
 
@@ -75,14 +66,12 @@ const BookingPage = () => {
 
             <Card>
               <CardContent>
-                <form onSubmit={(e) => { e.preventDefault(); fetchCars(); }} className="space-y-4">
+                <form className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="pickup">Pickup Location</Label>
                       <Autocomplete
-                        onPlaceChanged={() =>
-                          setPickupLocation(autocompleteRefPickup.current?.getPlace()?.formatted_address || "")
-                        }
+                        onPlaceChanged={handlePickupLocationChange}
                         ref={autocompleteRefPickup}
                       >
                         <Input
@@ -97,9 +86,7 @@ const BookingPage = () => {
                     <div className="space-y-2">
                       <Label htmlFor="dropoff">Drop-off Location</Label>
                       <Autocomplete
-                        onPlaceChanged={() =>
-                          setDropoffLocation(autocompleteRefDropoff.current?.getPlace()?.formatted_address || "")
-                        }
+                        onPlaceChanged={handleDropoffLocationChange}
                         ref={autocompleteRefDropoff}
                       >
                         <Input
@@ -158,10 +145,14 @@ const BookingPage = () => {
                       />
                     </div>
                   </div>
-
-                  <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                    Search Available Cars
-                  </Button>
+                  <Link href="/Vehicles">
+                    <Button
+                      type="submit"
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      Search Available Cars
+                    </Button>
+                  </Link>
                 </form>
               </CardContent>
             </Card>
