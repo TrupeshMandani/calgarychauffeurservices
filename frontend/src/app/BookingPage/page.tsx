@@ -19,10 +19,12 @@ const BookingPage = () => {
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
 
-  const autocompleteRefPickup = useRef<any>(null);
-  const autocompleteRefDropoff = useRef<any>(null);
-
-  const router = useRouter();
+  const autocompleteRefPickup = useRef<google.maps.places.Autocomplete | null>(
+    null
+  );
+  const autocompleteRefDropoff = useRef<google.maps.places.Autocomplete | null>(
+    null
+  );
 
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
@@ -48,7 +50,7 @@ const BookingPage = () => {
 
         <div className="container mx-auto p-4 relative z-10 flex justify-between h-full items-center">
           {/* Animated Text on Left Side */}
-          <div className="max-w-md text-white space-y-6 animate-fadeIn">
+          <div className="max-w-md text-white space-y-6 animate-fadeIn hidden lg:block">
             <h1 className="text-5xl font-bold animate-bounce">
               Your Journey Begins Here
             </h1>
@@ -71,8 +73,10 @@ const BookingPage = () => {
                     <div className="space-y-2">
                       <Label htmlFor="pickup">Pickup Location</Label>
                       <Autocomplete
+                        onLoad={(autocomplete) =>
+                          (autocompleteRefPickup.current = autocomplete)
+                        }
                         onPlaceChanged={handlePickupLocationChange}
-                        ref={autocompleteRefPickup}
                       >
                         <Input
                           id="pickup"
@@ -86,8 +90,10 @@ const BookingPage = () => {
                     <div className="space-y-2">
                       <Label htmlFor="dropoff">Drop-off Location</Label>
                       <Autocomplete
+                        onLoad={(autocomplete) =>
+                          (autocompleteRefDropoff.current = autocomplete)
+                        }
                         onPlaceChanged={handleDropoffLocationChange}
-                        ref={autocompleteRefDropoff}
                       >
                         <Input
                           id="dropoff"
