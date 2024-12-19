@@ -1513,3 +1513,5 @@ frontend/prisma/migrations/migration_lock.toml
 frontend/prisma/migrations/20241208040103_init/migration.sql
 frontend/prisma/migrations/20241208050240_add_url_column_to_car/migration.sql
 frontend/prisma/migrations/20241208050337_add_url_column_to_car/migration.sql
+package-lock.json
+package.json
