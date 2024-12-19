@@ -7,10 +7,10 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-              About LuxeRide
+              About Chauffeur
             </h3>
             <p className="mt-4 text-gray-300 text-sm">
-              LuxeRide offers premium car rentals for all your journey needs.
+              Chauffeur offers premium car rentals for all your journey needs.
             </p>
           </div>
           <div>
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
             <ul className="mt-4 space-y-4">
               <li className="text-gray-300">123 Luxe Street, NY</li>
               <li className="text-gray-300">(123) 456-7890</li>
-              <li className="text-gray-300">info@luxeride.com</li>
+              <li className="text-gray-300">info@Chauffeur.com</li>
             </ul>
           </div>
           <div>
@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="mt-8 text-center text-gray-400 text-sm">
-          &copy; {new Date().getFullYear()} LuxeRide. All rights reserved.
+          &copy; {new Date().getFullYear()} Chauffeur. All rights reserved.
         </div>
       </div>
     </footer>
