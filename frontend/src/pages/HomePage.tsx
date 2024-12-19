@@ -9,7 +9,7 @@ import React from "react";
 const HomePage = () => {
   return (
     <div>
-      <HeroSection />
+      <HeroSection /> 
       <FeaturedCars />
 
       <WhyChooseUs />
