@@ -1,18 +1,25 @@
-import connectToDatabase from "../../../../utils/db";
-import Car from "../../../../utils/models/Car"; // Make sure the path to your Car model is correct
+// src/app/api/cars/route.ts
+import { NextResponse } from "next/server";
+import { MongoClient } from "mongodb";
 
-export async function GET(req) {
+const uri = process.env.MONGO_URI; // Ensure your .env.local contains this URI
+
+export async function GET() {
   try {
-    // Connect to the database
-    await connectToDatabase();
+    const client = await MongoClient.connect(uri);
+    const db = client.db("chauffeurServices"); // Adjust the DB name if needed
+    const carsCollection = db.collection("cars");
 
-    // Fetch all cars from the database
-    const cars = await Car.find();
+    const cars = await carsCollection.find().toArray();
 
-    // Return the data as a JSON response
-    return new Response(JSON.stringify(cars), { status: 200 });
+    client.close();
+
+    return NextResponse.json(cars);
   } catch (error) {
     console.error("Error fetching cars:", error);
-    return new Response("Failed to fetch cars", { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch cars" },
+      { status: 500 }
+    );
   }
 }

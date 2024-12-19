@@ -2,8 +2,16 @@
 import React, { useEffect, useState } from "react";
 import CarCard from "./CarCard"; // Import the CarCard component
 
+interface Car {
+  name: string;
+  type: string;
+  price: string;
+  img: string;
+}
+
 const FeaturedCars: React.FC = () => {
-  const [cars, setCars] = useState<any[]>([]); // Add a type for cars state
+  const [cars, setCars] = useState<Car[]>([]);
+  const [featuredCars, setFeaturedCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,8 +23,9 @@ const FeaturedCars: React.FC = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch cars");
         }
-        const data = await response.json();
+        const data: Car[] = await response.json();
         setCars(data);
+        selectUniqueTypeCars(data);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -26,6 +35,22 @@ const FeaturedCars: React.FC = () => {
 
     fetchCars();
   }, []);
+
+  // Function to select 3 cars of different types
+  const selectUniqueTypeCars = (cars: Car[]) => {
+    const selectedCars: Car[] = [];
+    const carTypes = new Set<string>();
+
+    for (const car of cars) {
+      if (!carTypes.has(car.type)) {
+        selectedCars.push(car);
+        carTypes.add(car.type);
+      }
+      if (selectedCars.length === 3) break;
+    }
+
+    setFeaturedCars(selectedCars);
+  };
 
   if (loading) {
     return <p>Loading cars...</p>;
@@ -48,7 +73,7 @@ const FeaturedCars: React.FC = () => {
         </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {cars.slice(0, 3).map((car, index) => (
+          {featuredCars.map((car, index) => (
             <CarCard
               key={index} // Add a key for list rendering
               name={car.name}

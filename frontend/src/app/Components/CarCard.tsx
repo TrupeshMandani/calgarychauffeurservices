@@ -1,5 +1,7 @@
+// src/app/Components/CarCard.tsx
 "use client";
-import React from "react";
+
+import { useRouter } from "next/navigation";
 
 interface CarCardProps {
   name: string;
@@ -9,23 +11,28 @@ interface CarCardProps {
 }
 
 const CarCard: React.FC<CarCardProps> = ({ name, type, price, img }) => {
+  const router = useRouter();
+
+  const handleBookingClick = () => {
+    router.push("/BookingPage");
+  };
+
   return (
-    <div className="car-card bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="car-card border p-4 rounded-lg shadow-lg">
       <img
-        src={img || "https://via.placeholder.com/300x200"}
+        src={img}
         alt={name}
-        className="w-full h-48 object-cover"
+        className="w-full h-48 object-cover mb-4 rounded"
       />
-      <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-900">{name}</h3>
-        <p className="mt-2 text-gray-500">{type}</p>
-        <div className="mt-4 flex justify-between items-center">
-          <span className="text-2xl font-bold text-blue-600">{price}</span>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-            View Details
-          </button>
-        </div>
-      </div>
+      <h2 className="text-xl font-bold mb-2">{name}</h2>
+      <p className="text-sm text-gray-600 mb-2">Type: {type}</p>
+      <p className="text-lg font-bold mb-4">${price} per day</p>
+      <button
+        onClick={handleBookingClick}
+        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+      >
+        Book Now
+      </button>
     </div>
   );
 };
