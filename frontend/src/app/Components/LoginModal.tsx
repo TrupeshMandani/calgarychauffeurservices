@@ -1,3 +1,14 @@
+/**
+ * The LoginModal component in TypeScript React allows users to log in using email and password or
+ * Google authentication.
+ * @param  - The code you provided is a React component called `LoginModal` that serves as a modal for
+ * user login functionality. It allows users to log in using their email and password or through Google
+ * authentication. Here's a breakdown of the key parts of the code:
+ * @returns The `LoginModal` component is being returned. It is a React functional component that
+ * displays a modal for user login. The modal includes input fields for email and password, buttons for
+ * email login and Google login, error handling for login failures, and a cancel button to close the
+ * modal. The component also utilizes Firebase authentication methods for email and Google login.
+ */
 "use client";
 import React, { useState } from "react";
 import { firebaseApp } from "../_utils/Firebase";
