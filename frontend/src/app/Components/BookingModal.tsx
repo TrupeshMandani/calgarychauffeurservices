@@ -1,3 +1,13 @@
+/**
+ * The BookingModal component is a modal in a React application that allows users to book a car by
+ * providing their information and dates.
+ * @param  - The `BookingModal` component is a modal component used for booking a car. It takes three
+ * props:
+ * @returns The BookingModal component is being returned. It is a modal component that allows users to
+ * book a car by providing their name, email, phone number, pickup date, and return date. The modal
+ * includes input fields for user information and buttons to submit the booking or cancel the
+ * operation.
+ */
 import React from "react";
 interface BookingModalProps {
   isOpen: boolean;
