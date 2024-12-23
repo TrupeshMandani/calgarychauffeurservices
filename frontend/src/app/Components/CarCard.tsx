@@ -1,3 +1,11 @@
+/**
+ * The CarCard component is a React functional component that displays information about a car and
+ * allows users to book it.
+ * @param  - The `CarCard` component is a React functional component that represents a card displaying
+ * information about a car. It takes in the following props:
+ * @returns The `CarCard` component is being returned, which is a functional component that displays
+ * information about a car (name, type, price, and image) and includes a button to book the car.
+ */
 // src/app/Components/CarCard.tsx
 "use client";
 import React from "react";

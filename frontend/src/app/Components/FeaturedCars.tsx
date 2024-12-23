@@ -1,3 +1,5 @@
+/* This code snippet is a TypeScript React component named `FeaturedCars`. Here's a breakdown of what
+the code does: */
 "use client";
 import React, { useEffect, useState } from "react";
 import CarCard from "./CarCard"; // Import the CarCard component
