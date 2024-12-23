@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,8 +67,9 @@ const BookingPage = () => {
 
             <Card>
               <CardContent>
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4">
+                <form className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Pickup Location */}
                     <div className="space-y-2">
                       <Label htmlFor="pickup">Pickup Location</Label>
                       <Autocomplete
@@ -87,6 +87,7 @@ const BookingPage = () => {
                         />
                       </Autocomplete>
                     </div>
+                    {/* Drop-off Location */}
                     <div className="space-y-2">
                       <Label htmlFor="dropoff">Drop-off Location</Label>
                       <Autocomplete
@@ -106,7 +107,8 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Pickup Date */}
                     <div className="space-y-2">
                       <Label htmlFor="pickupDate">Pickup Date</Label>
                       <Input
@@ -117,6 +119,7 @@ const BookingPage = () => {
                         required
                       />
                     </div>
+                    {/* Pickup Time */}
                     <div className="space-y-2">
                       <Label htmlFor="pickupTime">Pickup Time</Label>
                       <Input
@@ -129,7 +132,8 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Drop-off Date */}
                     <div className="space-y-2">
                       <Label htmlFor="dropoffDate">Drop-off Date</Label>
                       <Input
@@ -140,6 +144,7 @@ const BookingPage = () => {
                         required
                       />
                     </div>
+                    {/* Drop-off Time */}
                     <div className="space-y-2">
                       <Label htmlFor="dropoffTime">Drop-off Time</Label>
                       <Input
@@ -152,14 +157,16 @@ const BookingPage = () => {
                     </div>
                   </div>
 
-                  <Link href="/Vehicles">
-                    <Button
-                      type="submit"
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2"
-                    >
-                      Search Available Cars
-                    </Button>
-                  </Link>
+                  <div className="pt-4">
+                    <Link href="/Vehicles">
+                      <Button
+                        type="submit"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2"
+                      >
+                        Search Available Cars
+                      </Button>
+                    </Link>
+                  </div>
                 </form>
               </CardContent>
             </Card>
