@@ -1,3 +1,5 @@
+/* This code snippet is a TypeScript React component for a navigation bar (`NavBar`). Here's a
+breakdown of what the code does: */
 "use client";
 import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
