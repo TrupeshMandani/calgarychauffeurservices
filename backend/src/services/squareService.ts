@@ -35,7 +35,11 @@ export const saveCustomerAndCard = async (
       idempotencyKey: uuidv4(), // Unique key for idempotency
       sourceId: cardToken, // Card token received from the frontend
       card: {
+<<<<<<< HEAD:backend/src/services/squareService.ts
         cardholderName: `${customerData.firstName} ${customerData.lastName}`, // Optional: cardholder's name
+=======
+        customerId: customerId, // Link the card to the created customer
+>>>>>>> 4ceb5ee (Solved Errors):frontend/PaymentBackHand/services/squareService.ts
       },
     });
     
