@@ -168,6 +168,5 @@ const BookingPage = () => {
       </div>
     </LoadScript>
   );
-};
-
+}
 export default BookingPage;
