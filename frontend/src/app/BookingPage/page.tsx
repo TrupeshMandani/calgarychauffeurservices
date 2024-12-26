@@ -1,3 +1,5 @@
+/* The above code is a TypeScript React component for a booking page of a car rental service. Here's a
+breakdown of what the code is doing: */
 "use client";
 
 import React, { useState, useRef } from "react";

@@ -4,7 +4,6 @@ summary of what the code is doing: */
 summary of what the code is doing: */
 "use client";
 import React from "react";
-import { firebaseApp } from "../_utils/Firebase";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";

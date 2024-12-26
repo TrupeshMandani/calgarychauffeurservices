@@ -1,3 +1,5 @@
+/* This code snippet is a React functional component named `WhyChooseUs`. It displays a section on a
+webpage that highlights reasons to choose a chauffeur service. */
 import React from "react";
 
 const WhyChooseUs: React.FC = () => {
