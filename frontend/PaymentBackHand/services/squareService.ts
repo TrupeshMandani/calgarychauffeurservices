@@ -33,11 +33,12 @@ export const saveCustomerAndCard = async (
     // Step 2: Save the card on file
     const createCardResponse = await client.cardsApi.createCard({
       idempotencyKey: uuidv4(), // Unique key for idempotency
+      sourceId: cardToken, // Card token received from the frontend
       card: {
-        sourceId: cardToken, // Card token received from the frontend
+        cardholderName: `${customerData.firstName} ${customerData.lastName}`, // Optional: cardholder's name
       },
     });
-
+    
     const cardId = createCardResponse.result.card?.id;
 
     if (!cardId) {
