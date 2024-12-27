@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import "./globals.css";
 import NavBar from "./Components/NavBar";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,10 @@ export default function RootLayout({
       >
         {" "}
         <NavBar />
+        <Script
+          src="https://web.squarecdn.com/v1/square.js"
+          strategy="beforeInteractive"
+        />
         {children}
       </body>
     </html>
