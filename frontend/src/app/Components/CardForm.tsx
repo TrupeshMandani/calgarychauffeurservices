@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../_utils/Firebase'; // Replace with your Firebase utility file
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../_utils/Firebase"; // Replace with your Firebase utility file
 
 declare const Square: any; // Ensure Square is globally declared
 
@@ -14,7 +14,7 @@ interface CustomerData {
 
 export default function CardForm() {
   const [card, setCard] = useState<any>(null);
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>("");
   const [user, setUser] = useState<any>(null);
 
   // Listen for Firebase Auth state changes
@@ -23,7 +23,7 @@ export default function CardForm() {
       if (currentUser) {
         setUser({
           id: currentUser.uid,
-          name: currentUser.displayName || 'Anonymous',
+          name: currentUser.displayName || "Anonymous",
           email: currentUser.email,
         });
       } else {
@@ -38,9 +38,10 @@ export default function CardForm() {
   useEffect(() => {
     const initializeSquare = async () => {
       try {
-        if (!Square || !Square.payments) {
-          console.error('Square Web Payments SDK not loaded.');
-          setStatus('Payment gateway not available.');
+        // Check if the Square object is available
+        if (typeof Square === "undefined" || !Square.payments) {
+          console.error("Square Web Payments SDK not loaded.");
+          setStatus("Payment gateway not available.");
           return;
         }
 
@@ -50,44 +51,53 @@ export default function CardForm() {
         );
 
         if (!payments) {
-          console.error('Failed to initialize Square Payments.');
-          setStatus('Error initializing payment gateway.');
+          console.error("Failed to initialize Square Payments.");
+          setStatus("Error initializing payment gateway.");
           return;
         }
 
-        const cardInstance = await payments.card();
-        await cardInstance.attach('#card-container');
-        setCard(cardInstance);
-        setStatus('');
+        const card = await payments.card();
+        await card.attach("#card-container");
+        setCard(card);
+        setStatus("Payment form initialized.");
       } catch (error) {
-        console.error('Error initializing Square Payments:', error);
-        setStatus('Error initializing payment form. Please try again.');
+        console.error("Error initializing Square Payments:", error);
+        setStatus("Error initializing payment form. Please try again.");
       }
     };
 
-    initializeSquare();
+    // Ensure the SDK is loaded before attempting initialization
+    const checkSquareLoaded = () => {
+      if (typeof Square !== "undefined") {
+        initializeSquare();
+      } else {
+        setTimeout(checkSquareLoaded, 500); // Retry after 500ms
+      }
+    };
+
+    checkSquareLoaded();
   }, []);
 
   // Handle Save Card
   const handleSaveCard = async () => {
     if (!card || !user) {
-      setStatus('User not logged in or card initialization failed.');
+      setStatus("User not logged in or card initialization failed.");
       return;
     }
 
     try {
       const result = await card.tokenize();
-      if (result.status === 'OK') {
+      if (result.status === "OK") {
         const customerData: CustomerData = {
-          firstName: user.name.split(' ')[0] || 'First',
-          lastName: user.name.split(' ')[1] || 'Last',
+          firstName: user.name.split(" ")[0] || "First",
+          lastName: user.name.split(" ")[1] || "Last",
           email: user.email,
         };
 
-        const response = await fetch('/api/save-card', {
-          method: 'POST',
+        const response = await fetch("/api/save-card", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             cardToken: result.token,
@@ -97,20 +107,20 @@ export default function CardForm() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Customer and card saved successfully:', data);
-          setStatus('Card saved successfully!');
+          console.log("Customer and card saved successfully:", data);
+          setStatus("Card saved successfully!");
         } else {
           const errorData = await response.json();
-          console.error('Error saving card:', errorData.error);
+          console.error("Error saving card:", errorData.error);
           setStatus(`Error saving card: ${errorData.error}`);
         }
       } else {
-        console.error('Card tokenization failed:', result.errors);
-        setStatus('Card tokenization failed. Please try again.');
+        console.error("Card tokenization failed:", result.errors);
+        setStatus("Card tokenization failed. Please try again.");
       }
     } catch (error) {
-      console.error('Error saving card:', error);
-      setStatus('Error saving card. Please try again.');
+      console.error("Error saving card:", error);
+      setStatus("Error saving card. Please try again.");
     }
   };
 
@@ -122,7 +132,9 @@ export default function CardForm() {
           Logged in as: {user.name} ({user.email})
         </p>
       ) : (
-        <p className="text-sm mb-4 text-red-500">Please log in to add your card.</p>
+        <p className="text-sm mb-4 text-red-500">
+          Please log in to add your card.
+        </p>
       )}
       <div
         id="card-container"
@@ -137,7 +149,15 @@ export default function CardForm() {
       >
         Save Card
       </button>
-      {status && <p className={`mt-2 ${status.includes('successfully') ? 'text-green-500' : 'text-red-500'}`}>{status}</p>}
+      {status && (
+        <p
+          className={`mt-2 ${
+            status.includes("successfully") ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {status}
+        </p>
+      )}
     </div>
   );
 }

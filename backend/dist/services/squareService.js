@@ -33,9 +33,7 @@ const saveCustomerAndCard = (cardToken, customerData) => __awaiter(void 0, void 
         const createCardResponse = yield client.cardsApi.createCard({
             idempotencyKey: (0, uuid_1.v4)(), // Unique key for idempotency
             sourceId: cardToken, // Card token received from the frontend
-            card: {
-                cardholderName: `${customerData.firstName} ${customerData.lastName}`, // Optional: cardholder's name
-            },
+            card: {},
         });
         const cardId = (_b = createCardResponse.result.card) === null || _b === void 0 ? void 0 : _b.id;
         if (!cardId) {
