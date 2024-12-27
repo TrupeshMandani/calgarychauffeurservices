@@ -12,14 +12,7 @@ const HomePage = () => {
     <div>
       <HeroSection />
       <FeaturedCars />
-      <CardForm
-        onSuccess={function (message: string): void {
-          throw new Error("Function not implemented.");
-        }}
-        onError={function (error: string): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      <CardForm />
       <WhyChooseUs />
       <Footer />
     </div>
