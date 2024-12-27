@@ -1,8 +1,13 @@
+/* The above code is a TypeScript React component for a login page of a web application. Here's a
+summary of what the code is doing: */
+/* The above code is a TypeScript React component for a login page of a web application. Here's a
+summary of what the code is doing: */
 "use client";
 import React from "react";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { firebaseApp } from "../_utils/Firebase";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
