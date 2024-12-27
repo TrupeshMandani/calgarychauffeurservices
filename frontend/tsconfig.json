@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/PaymentPage/page.js", "src/app/Components/PayPalButton.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/PaymentPage/page.js", "src/app/Components/PayPalButton.js", "../backend/src/services/squareService.js", "../backend/src/app.ts"],
   "exclude": ["node_modules"]
 }
