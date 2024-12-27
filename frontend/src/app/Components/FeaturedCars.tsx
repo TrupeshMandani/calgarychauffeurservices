@@ -1,3 +1,5 @@
+/* This code snippet is a TypeScript React component named `FeaturedCars`. Here's a breakdown of what
+the code does: */
 "use client";
 import React, { useEffect, useState } from "react";
 import CarCard from "./CarCard"; // Import the CarCard component
@@ -21,13 +23,20 @@ const FeaturedCars: React.FC = () => {
       try {
         const response = await fetch("/api/cars");
         if (!response.ok) {
-          throw new Error("Failed to fetch cars");
+          throw new Error(`Failed to fetch cars: ${response.statusText}`);
         }
         const data: Car[] = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid data format");
+        }
         setCars(data);
         selectUniqueTypeCars(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -53,11 +62,11 @@ const FeaturedCars: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading cars...</p>;
+    return <p className="text-center py-12">Loading cars...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p className="text-center py-12 text-red-500">Error: {error}</p>;
   }
 
   return (
@@ -73,9 +82,9 @@ const FeaturedCars: React.FC = () => {
         </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCars.map((car, index) => (
+          {featuredCars.map((car) => (
             <CarCard
-              key={index} // Add a key for list rendering
+              key={car.name} // Use a unique key instead of index
               name={car.name}
               type={car.type}
               price={car.price}

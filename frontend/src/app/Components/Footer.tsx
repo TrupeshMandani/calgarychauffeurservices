@@ -1,3 +1,11 @@
+/**
+ * The above function defines a footer component in a TypeScript React application that displays
+ * information about a car rental service called Chauffeur, including about, quick links, contact
+ * details, and social media links.
+ * @returns The Footer component is being returned, which contains the footer section of a website with
+ * information about Chauffeur, quick links, contact details, and social media links. The footer also
+ * includes a copyright notice at the bottom.
+ */
 import React from "react";
 
 const Footer: React.FC = () => {

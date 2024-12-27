@@ -1,3 +1,10 @@
+/**
+ * The HeroSection component in this TypeScript React code displays a premium car rental service with a
+ * background image of a luxury car and a call-to-action button to browse cars.
+ * @returns The HeroSection component is being returned, which is a React functional component
+ * displaying a hero section for a premium car rental service website. The component includes a
+ * heading, description, and a button to browse cars, along with an image of a luxury car.
+ */
 import React from "react";
 
 const HeroSection: React.FC = () => {

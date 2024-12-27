@@ -1,3 +1,13 @@
+/**
+ * The BookingModal component is a modal form for booking a car with input fields for name, email,
+ * phone, pickup date, and return date.
+ * @param  - The `BookingModal` component is a modal component used for booking a car. It takes in
+ * three props:
+ * @returns The `BookingModal` component is being returned. It is a modal component for booking a car
+ * that is displayed when `isOpen` prop is true. The modal contains a form for users to input their
+ * booking details such as name, email, phone, pickup date, and return date. Upon form submission, the
+ * `handleSubmit` function is called to gather the form data, call the `onSubmit`
+ */
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;

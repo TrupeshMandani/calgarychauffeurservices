@@ -1513,6 +1513,7 @@ frontend/prisma/migrations/migration_lock.toml
 frontend/prisma/migrations/20241208040103_init/migration.sql
 frontend/prisma/migrations/20241208050240_add_url_column_to_car/migration.sql
 frontend/prisma/migrations/20241208050337_add_url_column_to_car/migration.sql
+<<<<<<< HEAD
 frontend.zip
 frontend/PaymentBackHand/package-lock.json
 frontend/PaymentBackHand/package.json
@@ -9639,3 +9640,7 @@ frontend/PaymentBackHand/node_modules/yn/lenient.js
 frontend/PaymentBackHand/node_modules/yn/license
 frontend/PaymentBackHand/node_modules/yn/package.json
 frontend/PaymentBackHand/node_modules/yn/readme.md
+=======
+package-lock.json
+package.json
+>>>>>>> main
