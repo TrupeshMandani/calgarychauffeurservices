@@ -1,55 +1,37 @@
 "use strict";
-
-const express = require("express");
-const { saveCustomerAndCard } = require("../services/squareService");
-
-const router = express.Router();
-
-// Route: POST /save-card
-router.post("/save-card", async (req, res) => {
-  const { cardToken, customerData } = req.body;
-
-  try {
-    // Validate the incoming request body
-    if (!cardToken || !customerData) {
-      throw new Error(
-        "Invalid request: cardToken and customerData are required."
-      );
-    }
-
-    if (
-      !customerData.firstName ||
-      !customerData.lastName ||
-      !customerData.email
-    ) {
-      throw new Error(
-        "Invalid customerData: firstName, lastName, and email are required."
-      );
-    }
-
-    // Process the card and customer data
-    const result = await saveCustomerAndCard(cardToken, customerData);
-
-    // Return success response
-    res.status(200).json({
-      success: true,
-      ...result,
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-  } catch (error) {
-    // Handle and log the error
-    console.error("Error in /save-card route:", error);
-
-    // Determine the response message
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "An unknown error occurred while saving the card.";
-
-    res.status(400).json({
-      success: false,
-      error: errorMessage,
-    });
-  }
-});
-
-module.exports = router;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const squareService_1 = require("../services/squareService");
+const router = express_1.default.Router();
+router.post("/save-card", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { cardToken, customerData } = req.body;
+    try {
+        const result = yield (0, squareService_1.saveCustomerAndCard)(cardToken, customerData);
+        res.status(200).json(Object.assign({ success: true }, result));
+    }
+    catch (error) {
+        let errorMessage = "An unknown error occurred.";
+        // Safely handle the 'unknown' error type
+        if (error instanceof Error) {
+            errorMessage = error.message;
+        }
+        else if (typeof error === "object" && error !== null && "message" in error) {
+            errorMessage = error.message;
+        }
+        console.error("Error in /save-card route:", errorMessage);
+        res.status(500).json({ success: false, error: errorMessage });
+    }
+}));
+exports.default = router;
