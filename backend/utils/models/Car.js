@@ -21,6 +21,10 @@ const carSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
 });
 
 export default mongoose.models.Car || mongoose.model("Car", carSchema);
