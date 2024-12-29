@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "square": "^39.1.1",
+    "uuid": "^11.0.3"
+  }
+}

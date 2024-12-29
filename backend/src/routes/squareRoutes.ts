@@ -10,11 +10,14 @@ router.post("/save-card", async (req: Request, res: Response) => {
     const result = await saveCustomerAndCard(cardToken, customerData);
     res.status(200).json({ success: true, ...result });
   } catch (error) {
+    let errorMessage = "An unknown error occurred.";
+
     // Safely handle the 'unknown' error type
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "An unknown error occurred while saving the card.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "object" && error !== null && "message" in error) {
+      errorMessage = (error as any).message;
+    }
 
     console.error("Error in /save-card route:", errorMessage);
     res.status(500).json({ success: false, error: errorMessage });

@@ -28,15 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {" "}
-        <NavBar />
+      <head>
+        {/* Include Square Web Payments SDK */}
         <Script
           src="https://web.squarecdn.com/v1/square.js"
           strategy="beforeInteractive"
         />
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <NavBar />
         {children}
       </body>
     </html>
