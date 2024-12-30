@@ -7,9 +7,16 @@ interface CarCardProps {
   type: string;
   price: string;
   img: string;
+  description: string;
 }
 
-const CarCard: React.FC<CarCardProps> = ({ name, type, price, img }) => {
+const CarCard: React.FC<CarCardProps> = ({
+  name,
+  type,
+  price,
+  img,
+  description,
+}) => {
   const router = useRouter();
 
   const handleBookingClick = () => {
@@ -25,6 +32,7 @@ const CarCard: React.FC<CarCardProps> = ({ name, type, price, img }) => {
       />
       <h2 className="text-xl font-bold text-gray-800 mb-2">{name}</h2>
       <p className="text-sm text-gray-600 mb-2">Type: {type}</p>
+      <p className="text-sm text-gray-600 mb-2">{description}</p>
       <p className="text-lg font-semibold text-gray-900 mb-4">
         ${price} per day
       </p>
