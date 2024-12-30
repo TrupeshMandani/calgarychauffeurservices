@@ -1,5 +1,3 @@
-
-
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -19,18 +17,20 @@ const CarCard: React.FC<CarCardProps> = ({ name, type, price, img }) => {
   };
 
   return (
-    <div className="car-card border p-4 rounded-lg shadow-lg">
+    <div className="car-card p-4 bg-cream  shadow-lg via-cream-200  border  hover:shadow-2xl transition-transform transform hover:scale-105">
       <img
         src={img}
         alt={name}
-        className="w-full h-48 object-cover mb-4 rounded"
+        className="w-full h-48 object-cover mb-4 rounded-md border border-gray-200"
       />
-      <h2 className="text-xl font-bold mb-2">{name}</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-2">{name}</h2>
       <p className="text-sm text-gray-600 mb-2">Type: {type}</p>
-      <p className="text-lg font-bold mb-4">${price} per day</p>
+      <p className="text-lg font-semibold text-gray-900 mb-4">
+        ${price} per day
+      </p>
       <button
         onClick={handleBookingClick}
-        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        className="w-full bg-yellow-400 text-gray-800 py-2 px-4 rounded hover:bg-yellow-500 transition-all duration-300"
       >
         Book Now
       </button>
