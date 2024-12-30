@@ -1,3 +1,107 @@
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import Script from "next/script";
+
+// declare const Square: any;
+
+// export default function CardForm() {
+//   const [status, setStatus] = useState("Loading payment form...");
+//   const [card, setCard] = useState<any>(null);
+
+//   const initializeSquare = async () => {
+//     try {
+//       const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
+//       const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
+//       const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "sandbox";
+
+//       if (!appId || !locationId) {
+//         setStatus("Missing Square configuration.");
+//         console.error("Missing Square App ID or Location ID in environment variables.");
+//         return;
+//       }
+
+//       if (typeof Square === "undefined" || !Square.payments) {
+//         setStatus("Square SDK not available.");
+//         console.error("Square SDK not loaded.");
+//         return;
+//       }
+
+//       const payments = Square.payments(appId, locationId, { environment });
+
+//       const cardInstance = await payments.card();
+//       console.log("Card instance created:", cardInstance);
+
+//       await cardInstance.attach("#card-container");
+//       setCard(cardInstance);
+//       setStatus("Payment form ready.");
+//     } catch (error) {
+//       console.error("Error initializing Square:", error);
+//       setStatus("Error initializing payment form.");
+//     }
+//   };
+
+//   const handlePayment = async () => {
+//     if (!card) {
+//       setStatus("Card form not ready.");
+//       return;
+//     }
+
+//     try {
+//       const result = await card.tokenize();
+//       if (result.status === "OK") {
+//         setStatus(`Payment successful! Token: ${result.token}`);
+//         console.log("Token:", result.token);
+//       } else {
+//         setStatus("Card tokenization failed.");
+//       }
+//     } catch (error) {
+//       console.error("Error during payment submission:", error);
+//       setStatus("Error processing payment.");
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (typeof Square !== "undefined") {
+//       initializeSquare();
+//     }
+//   }, []);
+
+//   return (
+//     <>
+//       <Script
+//         src="https://sandbox.web.squarecdn.com/v1/square.js"
+//         strategy="beforeInteractive"
+//         onLoad={() => console.log("Square SDK loaded successfully.")}
+//         onError={() => console.error("Failed to load Square SDK.")}
+//       />
+
+//       <div className="max-w-md mx-auto p-4">
+//         <h2 className="text-xl font-bold mb-4">Square Payment Form</h2>
+//         <div
+//           id="card-container"
+//           style={{
+//             minHeight: "200px",
+//             minWidth: "300px",
+//             border: "1px solid #ccc",
+//             padding: "10px",
+//             backgroundColor: "#f9f9f9",
+//             borderRadius: "8px",
+//           }}
+//         ></div>
+//         <button
+//           onClick={handlePayment}
+//           disabled={status !== "Payment form ready."}
+//           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-4"
+//         >
+//           Submit Payment
+//         </button>
+//         <p className="mt-4 text-gray-700">{status}</p>
+//       </div>
+//     </>
+//   );
+// }
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,188 +110,167 @@ import Script from "next/script";
 declare const Square: any;
 
 export default function CardForm() {
-  const [card, setCard] = useState<any>(null);
-  const [sdkLoaded, setSdkLoaded] = useState(false);
   const [status, setStatus] = useState<string>("Loading payment form...");
+  const [card, setCard] = useState<any>(null);
+  const [customerData, setCustomerData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
 
-  // Function to attach the card form to the DOM
-  const attachCardForm = async (cardInstance: any) => {
-    let retries = 3; // Number of retry attempts
-    while (retries > 0) {
-      try {
-        console.log("Checking if #card-container exists...");
-        const container = document.getElementById("card-container");
-        if (!container) {
-          console.error("Error: #card-container does not exist in the DOM.");
-          setStatus("Error: Card container not found.");
-          return;
-        }
-
-        console.log("Attempting to attach card form...");
-        await cardInstance.attach("#card-container");
-        console.log("Card form attached successfully.");
-        return; // Exit on success
-      } catch (error) {
-        console.error("Error attaching card form. Retrying...", error);
-        retries -= 1;
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before retrying
-      }
-    }
-
-    console.error("Failed to attach card form after 3 retries.");
-    setStatus("Error: Unable to attach card form.");
-  };
-
-  // Function to initialize the Square Payments
+  // Initialize Square Card Form
   const initializeSquare = async () => {
-    if (!sdkLoaded) {
-      console.error("Square SDK not loaded.");
-      setStatus("Payment gateway not available.");
-      return;
-    }
-
     try {
-      console.log("Initializing Square Payments...");
-      const environment =
-        process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT === "production"
-          ? "production"
-          : "sandbox";
+      const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
+      const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
+      const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "sandbox";
 
-      console.log("Environment:", environment);
-      console.log("App ID:", process.env.NEXT_PUBLIC_SQUARE_APP_ID);
-      console.log("Location ID:", process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID);
-
-      const payments = Square.payments(
-        process.env.NEXT_PUBLIC_SQUARE_APP_ID!,
-        process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID!,
-        { environment }
-      );
-
-      console.log("Payments instance created:", payments);
-
-      if (!payments) {
-        console.error("Failed to initialize Square Payments.");
-        setStatus("Failed to initialize Square Payments.");
+      if (!appId || !locationId) {
+        setStatus("Missing Square configuration.");
+        console.error("Square App ID or Location ID is not set.");
         return;
       }
 
-      const cardInstance = await payments.card();
-      console.log("Card instance created:", cardInstance);
+      if (typeof Square === "undefined" || !Square.payments) {
+        setStatus("Square SDK not available.");
+        console.error("Square SDK is not loaded.");
+        return;
+      }
 
-      await attachCardForm(cardInstance);
+      const payments = Square.payments(appId, locationId, { environment });
+      const cardInstance = await payments.card();
+
+      await cardInstance.attach("#card-container");
       setCard(cardInstance);
       setStatus("Payment form ready.");
+      console.log("Square Card Form attached successfully.");
     } catch (error) {
-      console.error("Error in initializeSquare:", error);
-      setStatus("Error initializing payment form.");
+      console.error("Error initializing Square Card Form:", error);
+      setStatus("Error loading payment form.");
     }
   };
 
-  // Effect to initialize Square when SDK is loaded
-  useEffect(() => {
-    if (sdkLoaded) {
-      console.log("SDK loaded. Initializing Square...");
-      initializeSquare();
-    }
-  }, [sdkLoaded]);
-
-  // Function to handle payment submission
+  // Handle Payment Submission
   const handlePayment = async () => {
     if (!card) {
-      setStatus("Card form not ready.");
+      setStatus("Card form is not ready.");
       return;
     }
 
     try {
       const result = await card.tokenize();
-      console.log("Tokenization result:", result);
-
       if (result.status !== "OK") {
         setStatus("Card tokenization failed.");
         return;
       }
 
-      const response = await fetch("/api/save-card", {
+      // Send the card token and customer information to the backend
+      const response = await fetch("http://localhost:3000/api/save-card", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          cardToken: result.token,
-          customerData: {
-            firstName: "John",
-            lastName: "Doe",
-            email: "john.doe@example.com",
-          },
+          cardToken: result.token, // Card token from Square
+          customerData, // Customer data from input fields
         }),
       });
+      
 
       const data = await response.json();
-      console.log("Backend response:", data);
-
       if (data.success) {
-        setStatus("Payment successful!");
+        setStatus("Card and customer saved successfully!");
       } else {
-        setStatus("Payment failed.");
+        setStatus("Failed to save card and customer.");
       }
     } catch (error) {
-      console.error("Error processing payment:", error);
-      setStatus("Error processing payment.");
+      console.error("Error during payment submission:", error);
+      setStatus("An error occurred while saving card and customer.");
     }
   };
 
-  // Function to test backend connection
-  const testBackendConnection = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/test");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("Backend Response:", data);
-      setStatus(data.message || "Backend test failed.");
-    } catch (error) {
-      console.error("Error testing backend connection:", error);
-      setStatus("Failed to connect to backend.");
+  // Load the Square Payment Form
+  useEffect(() => {
+    if (typeof Square !== "undefined") {
+      initializeSquare();
     }
+  }, []);
+
+  // Handle input changes for customer data
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCustomerData({ ...customerData, [name]: value });
   };
 
   return (
     <>
-      {/* Dynamically load Square SDK */}
+      {/* Load Square SDK */}
       <Script
         src="https://sandbox.web.squarecdn.com/v1/square.js"
         strategy="beforeInteractive"
-        onLoad={() => {
-          console.log("Square SDK loaded successfully.");
-          setSdkLoaded(true);
-        }}
-        onError={() => {
-          console.error("Failed to load Square SDK.");
-          setStatus("Failed to load payment gateway.");
-        }}
+        onLoad={() => console.log("Square SDK loaded successfully.")}
+        onError={() => console.error("Failed to load Square SDK.")}
       />
 
       <div className="max-w-md mx-auto p-4">
-        <h2 className="text-xl font-bold mb-4">Secure Card Form</h2>
+        <h2 className="text-xl font-bold mb-4">Square Payment Form</h2>
+
+        {/* Customer Information Form */}
+        <div className="mb-4">
+          <label className="block mb-2">First Name</label>
+          <input
+            type="text"
+            name="firstName"
+            value={customerData.firstName}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded"
+            placeholder="Enter your first name"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            value={customerData.lastName}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded"
+            placeholder="Enter your last name"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={customerData.email}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded"
+            placeholder="Enter your email address"
+          />
+        </div>
+
+        {/* Square Card Form */}
         <div
           id="card-container"
-          className="mb-4 border p-4 rounded bg-gray-100"
-          style={{ minHeight: "150px" }}
-        >
-          {status === "Loading payment form..." && "Loading card form..."}
-        </div>
+          style={{
+            minHeight: "200px",
+            minWidth: "300px",
+            border: "1px solid #ccc",
+            padding: "10px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+          }}
+        ></div>
+
+        {/* Submit Button */}
         <button
           onClick={handlePayment}
-          disabled={!sdkLoaded || status !== "Payment form ready."}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          disabled={status !== "Payment form ready."}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-4"
         >
           Submit Payment
         </button>
-        <button
-          onClick={testBackendConnection}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 mt-4"
-        >
-          Test Backend Connection
-        </button>
+
+        {/* Status Message */}
         <p className="mt-4 text-gray-700">{status}</p>
       </div>
     </>

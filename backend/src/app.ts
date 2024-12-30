@@ -6,7 +6,11 @@ import squareRoutes from "./routes/squareRoutes"; // Ensure this file exists and
 const app = express();
 
 // Middleware
-app.use(cors()); // Enables cross-origin requests
+app.use(cors({
+  origin: "http://localhost:3001", // Your frontend URL
+  optionsSuccessStatus: 200,
+}));
+// Enables cross-origin requests
 app.use(express.json());
 
 // Root route for the API
@@ -18,6 +22,7 @@ app.get("/", (req, res) => {
 app.get("/api/test", (req, res) => {
   res.json({ message: "Backend is working!" });
 });
+
 
 // Use routes from squareRoutes
 app.use("/api", squareRoutes);

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
-import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,13 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Include Square Web Payments SDK */}
-        <Script
-          src="https://web.squarecdn.com/v1/square.js"
-          strategy="beforeInteractive"
-        />
-      </head>
+     
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
