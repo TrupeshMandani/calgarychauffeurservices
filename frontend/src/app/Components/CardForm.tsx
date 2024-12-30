@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,17 +12,23 @@ export default function CardForm() {
 
   const initializeSquare = async () => {
     try {
+      const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
+      const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
+      const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "sandbox";
+
+      if (!appId || !locationId) {
+        setStatus("Missing Square configuration.");
+        console.error("Missing Square App ID or Location ID in environment variables.");
+        return;
+      }
+
       if (typeof Square === "undefined" || !Square.payments) {
         setStatus("Square SDK not available.");
         console.error("Square SDK not loaded.");
         return;
       }
 
-      const payments = Square.payments(
-        "sandbox-sq0idb-qnVKzO0vwx3ZhQiQBU5Jtg", // Replace with your Square Sandbox App ID
-        "LZZAS82GJAWQC", // Replace with your Square Sandbox Location ID
-        { environment: "sandbox" }
-      );
+      const payments = Square.payments(appId, locationId, { environment });
 
       const cardInstance = await payments.card();
       console.log("Card instance created:", cardInstance);
@@ -63,7 +70,6 @@ export default function CardForm() {
 
   return (
     <>
-      {/* Load the Square JavaScript SDK */}
       <Script
         src="https://sandbox.web.squarecdn.com/v1/square.js"
         strategy="beforeInteractive"
