@@ -1,5 +1,3 @@
-/* This code snippet is a TypeScript React component for a navigation bar (`NavBar`). Here's a
-breakdown of what the code does: */
 "use client";
 import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
@@ -30,34 +28,31 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg relative z-50">
+    <nav className="absolute z-10 w-full border-b border-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex-shrink-0 flex items-center">
-            <h1 className="text-2xl font-bold text-blue-600">Chauffeur</h1>
+        <div className="flex justify-between h-16 items-center">
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-bold text-yellow-400">Chauffeur</h1>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="/" className="text-gray-700 hover:text-blue-600">
+            <a href="/" className="text-white hover:text-yellow-400">
               Home
             </a>
-            <a href="#" className="text-gray-700 hover:text-blue-600">
+            <a href="#" className="text-white hover:text-yellow-400">
               Vehicles
             </a>
-            <a
-              href="/BookingPage"
-              className="text-gray-700 hover:text-blue-600"
-            >
+            <a href="/BookingPage" className="text-white hover:text-yellow-400">
               Services
             </a>
-            <a href="/AboutUs" className="text-gray-700 hover:text-blue-600">
+            <a href="/AboutUs" className="text-white hover:text-yellow-400">
               About
             </a>
-            <a href="/ContactUs" className="text-gray-700 hover:text-blue-600">
+            <a href="/ContactUs" className="text-white hover:text-yellow-400">
               Contact
             </a>
             <a
               href="/BookingPage"
-              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+              className="bg-yellow-400 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition-all duration-300"
             >
               Book Now
             </a>
@@ -66,13 +61,13 @@ const NavBar: React.FC = () => {
               <img
                 src={user.photoURL || "/default-user.png"}
                 alt="User"
-                className="w-8 h-8 rounded-full cursor-pointer"
+                className="w-8 h-8 rounded-full cursor-pointer border-2 border-yellow-400"
                 onClick={handleProfileClick}
               />
             ) : (
               <a
                 href="/LogInPage"
-                className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+                className="bg-yellow-400 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition-all duration-300"
               >
                 Sign In
               </a>
