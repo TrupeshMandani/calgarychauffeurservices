@@ -1,9 +1,10 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
+// import express from "express";
+// import cors from "cors";
+// import squareRoutes from "./routes/squareRoutes"; // Ensure this file exists and is correct
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // // Initialize Express app
 // const app = express();

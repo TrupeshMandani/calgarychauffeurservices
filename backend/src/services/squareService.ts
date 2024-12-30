@@ -37,10 +37,12 @@
 //   return { customerId, cardId };
 // };
 import { Client, Environment } from "square";
+import dotenv from "dotenv";
 
+dotenv.config();
 const client = new Client({
-  environment: Environment.Sandbox, // Use Environment.Production for live mode
-  accessToken: "EAAAl7P596TTQrfsTc_O9oc-pRMQEp48v-6XQVEUAlnGOowWQ9gyFdFwsj90Wf8z", // Your token
+  environment: process.env.SQUARE_ENVIRONMENT === "production" ? Environment.Production : Environment.Sandbox,
+  accessToken: process.env.SQUARE_ACCESS_TOKEN,
 });
 
 export const saveCustomerAndCard = async (

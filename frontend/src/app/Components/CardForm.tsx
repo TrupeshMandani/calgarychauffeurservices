@@ -297,7 +297,7 @@ export default function CardForm() {
     try {
       const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
       const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
-      const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "sandbox";
+      const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "PRODUCTION";
 
       if (!appId || !locationId) {
         setStatus("Missing Square configuration.");
@@ -384,7 +384,7 @@ export default function CardForm() {
   return (
     <>
       <Script
-        src="https://sandbox.web.squarecdn.com/v1/square.js"
+        src="https://web.squarecdn.com/v1/square.js"
         strategy="beforeInteractive"
         onLoad={() => console.log("Square SDK loaded successfully.")}
         onError={() => console.error("Failed to load Square SDK.")}
