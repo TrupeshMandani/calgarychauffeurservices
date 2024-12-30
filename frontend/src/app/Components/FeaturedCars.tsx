@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import CarCard from "./CarCard"; // Import the CarCard component
 
 interface Car {
+  description: string;
   name: string;
   type: string;
   price: string;
@@ -89,6 +90,7 @@ const FeaturedCars: React.FC = () => {
               type={car.type}
               price={car.price}
               img={car.img}
+              description={car.description}
             />
           ))}
         </div>
