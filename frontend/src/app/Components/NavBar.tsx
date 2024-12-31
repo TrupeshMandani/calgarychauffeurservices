@@ -4,6 +4,8 @@ import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { firebaseApp } from "../_utils/Firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion"; // Import motion from Framer Motion
+import { slideInFromTop2 } from "../_utils/motion";
 
 const NavBar: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -27,9 +29,13 @@ const NavBar: React.FC = () => {
   const handleProfileClick = () => {
     setShowModal(true);
   };
-
   return (
-    <nav className="absolute z-20 w-full border-b border-gray-300">
+    <motion.nav
+      className="absolute z-20 w-full border-b border-gray-300"
+      initial="hidden" // Initial state for animation
+      animate="visible" // Final state for animation
+      variants={slideInFromTop2} // Animation variants
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0">
@@ -108,7 +114,7 @@ const NavBar: React.FC = () => {
           </div>
         </div>
       )}
-    </nav>
+    </motion.nav>
   );
 };
 

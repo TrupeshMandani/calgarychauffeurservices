@@ -9,7 +9,8 @@ export function slideInFromLeft(delay: number) {
       opacity: 1,
       transition: {
         delay: delay,
-        duration: 0.5,
+        duration: 0.6,
+        ease: "easeOut",
       },
     },
   };
@@ -32,6 +33,18 @@ export function slideInFromRight(delay: number) {
 
 // Object for sliding in from the top
 export const slideInFromTop = {
-  hidden: { opacity: 0, y: -50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  hidden: { opacity: 0, y: "-100vh" }, // Start completely off-screen
+  visible: { opacity: 1, y: "0", transition: { duration: 1 } }, // Slide into place
+};
+export const fadeIn = {
+  hidden: { opacity: 0 }, // Start fully transparent
+  visible: { opacity: 1, transition: { duration: 1.5, ease: "easeOut" } }, // Fade in smoothly
+};
+export const slideInFromTop2 = {
+  hidden: { y: "-100%", opacity: 0 },
+  visible: {
+    y: "0%",
+    opacity: 1,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
 };
