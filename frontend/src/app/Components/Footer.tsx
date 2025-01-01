@@ -1,17 +1,15 @@
-/**
- * The above function defines a footer component in a TypeScript React application that displays
- * information about a car rental service called Chauffeur, including about, quick links, contact
- * details, and social media links.
- * @returns The Footer component is being returned, which contains the footer section of a website with
- * information about Chauffeur, quick links, contact details, and social media links. The footer also
- * includes a copyright notice at the bottom.
- */
 import React from "react";
+import "animate.css"; // Import Animate.css for animations
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800">
+    <footer
+      className="bg-gray-900 animate__animated animate__fadeInUp"
+      style={{ animationDuration: "1s" }}
+    >
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Separator Line */}
+        <hr className="border-gray-700 mb-8" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
@@ -27,22 +25,22 @@ const Footer: React.FC = () => {
             </h3>
             <ul className="mt-4 space-y-4">
               <li>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-yellow-500">
                   Home
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-yellow-500">
                   Vehicles
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-yellow-500">
                   Services
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="#" className="text-gray-300 hover:text-yellow-500">
                   Contact
                 </a>
               </li>
@@ -63,16 +61,16 @@ const Footer: React.FC = () => {
               Follow Us
             </h3>
             <div className="mt-4 flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-yellow-500">
                 <i className="bi bi-facebook"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-yellow-500">
                 <i className="bi bi-twitter"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-yellow-500">
                 <i className="bi bi-instagram"></i>
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-yellow-500">
                 <i className="bi bi-linkedin"></i>
               </a>
             </div>

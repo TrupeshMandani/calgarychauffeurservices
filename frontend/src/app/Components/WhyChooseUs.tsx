@@ -1,46 +1,113 @@
-/* This code snippet is a React functional component named `WhyChooseUs`. It displays a section on a
-webpage that highlights reasons to choose a chauffeur service. */
-import React from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import "animate.css";
 
 const WhyChooseUs: React.FC = () => {
   const reasons = [
     {
-      icon: "bi-car-front",
-      title: "Premium Vehicles",
-      description: "Choose from our collection of luxury and premium vehicles",
+      icon: "bi-gem",
+      title: "Luxury Vehicles",
+      description:
+        "Experience unparalleled luxury with our premium fleet of vehicles.",
     },
     {
-      icon: "bi-shield-check",
+      icon: "bi-clock-history",
       title: "24/7 Support",
-      description: "Round-the-clock customer support for your convenience",
+      description:
+        "Our team is available around the clock to assist you anytime.",
     },
     {
-      icon: "bi-wallet2",
-      title: "Best Rates",
-      description: "Competitive pricing with no hidden charges",
+      icon: "bi-cash-stack",
+      title: "Transparent Pricing",
+      description: "No hidden fees—just competitive rates tailored for you.",
     },
   ];
 
+  const [inView, setInView] = useState(false);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="bg-white py-16">
+    <div
+      ref={sectionRef}
+      className={`py-16 transition-all duration-1000 ${
+        inView ? "bg-gray-900" : "bg-gray-700"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        <div
+          className={`text-center ${
+            inView ? "animate__animated animate__fadeInDown" : "opacity-0"
+          }`}
+          style={{ animationDuration: "1s" }}
+        >
+          <h2 className="text-4xl font-extrabold text-white">
             Why Choose Chauffeur?
           </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            Discover the difference with our exceptional service, premium
+            vehicles, and unwavering commitment to excellence.
+          </p>
         </div>
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
+        <div className="mt-12 grid gap-12 md:grid-cols-3">
           {reasons.map((reason, index) => (
             <div key={index} className="text-center">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white mx-auto">
-                <i className={`bi ${reason.icon} text-2xl`}></i>
+              {/* Icon Section */}
+              <div
+                className={`flex items-center justify-center h-16 w-16 rounded-full bg-yellow-500 text-gray-900 mx-auto shadow-lg ${
+                  inView ? "animate__animated animate__backInLeft" : "opacity-0"
+                }`}
+                style={{
+                  animationDuration: "0.8s",
+                  animationDelay: `${index * 0.2}s`,
+                }}
+                onAnimationEnd={(e) => {
+                  if (inView) {
+                    e.currentTarget.classList.remove("animate__backInLeft");
+                    e.currentTarget.classList.add("animate__flip");
+                  }
+                }}
+              >
+                <i className={`bi ${reason.icon} text-4xl`}></i>
               </div>
-              <h3 className="mt-6 text-lg font-medium text-gray-900">
-                {reason.title}
-              </h3>
-              <p className="mt-2 text-base text-gray-500">
-                {reason.description}
-              </p>
+              {/* Text Section */}
+              <div
+                className={`${
+                  inView ? "animate__animated animate__fadeIn" : "opacity-0"
+                }`}
+                style={{
+                  animationDuration: "0.5s",
+                  animationDelay: `${index * 0.6 + 0.8}s`,
+                }}
+              >
+                <h3 className="mt-6 text-xl font-semibold text-white">
+                  {reason.title}
+                </h3>
+                <p className="mt-3 text-base text-gray-400">
+                  {reason.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
