@@ -9,6 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveCustomerAndCard = void 0;
 // const client = new Client({
@@ -43,9 +46,11 @@ exports.saveCustomerAndCard = void 0;
 //   return { customerId, cardId };
 // };
 const square_1 = require("square");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const client = new square_1.Client({
-    environment: square_1.Environment.Sandbox, // Use Environment.Production for live mode
-    accessToken: "EAAAl7P596TTQrfsTc_O9oc-pRMQEp48v-6XQVEUAlnGOowWQ9gyFdFwsj90Wf8z", // Your token
+    environment: process.env.SQUARE_ENVIRONMENT === "production" ? square_1.Environment.Production : square_1.Environment.Sandbox,
+    accessToken: process.env.SQUARE_ACCESS_TOKEN,
 });
 const saveCustomerAndCard = (cardToken, customerData) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;

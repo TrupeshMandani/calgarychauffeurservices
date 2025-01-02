@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import CarCard from "../Components/CarCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 
@@ -9,6 +8,7 @@ import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import CarCard from "../Components/CarCard";
 
 const Page = () => {
   const [cars, setCars] = useState<any[]>([]);
@@ -113,6 +113,7 @@ const Page = () => {
                       type={car.type}
                       price={car.price}
                       img={car.img}
+                      description={""}
                     />
                   </SwiperSlide>
                 )

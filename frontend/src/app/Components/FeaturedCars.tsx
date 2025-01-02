@@ -1,8 +1,8 @@
-/* This code snippet is a TypeScript React component named `FeaturedCars`. Here's a breakdown of what
-the code does: */
 "use client";
 import React, { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer"; // Import useInView
 import CarCard from "./CarCard"; // Import the CarCard component
+import "animate.css"; // Import Animate.css
 
 interface Car {
   description: string;
@@ -17,6 +17,11 @@ const FeaturedCars: React.FC = () => {
   const [featuredCars, setFeaturedCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Trigger animation only once
+    threshold: 0.2, // Percentage of component visibility to trigger
+  });
 
   useEffect(() => {
     // Fetch cars data from the API
@@ -71,7 +76,7 @@ const FeaturedCars: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-50 py-12">
+    <div ref={ref} className="bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -83,15 +88,25 @@ const FeaturedCars: React.FC = () => {
         </div>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCars.map((car) => (
-            <CarCard
-              key={car.name} // Use a unique key instead of index
-              name={car.name}
-              type={car.type}
-              price={car.price}
-              img={car.img}
-              description={car.description}
-            />
+          {featuredCars.map((car, index) => (
+            <div
+              key={car.name}
+              className={`${
+                inView ? "animate__animated animate__backInLeft" : "opacity-0"
+              }`}
+              style={{
+                animationDelay: `${index * 0.2}s`,
+                transition: "opacity 0.5s ease-out",
+              }}
+            >
+              <CarCard
+                name={car.name}
+                type={car.type}
+                price={car.price}
+                img={car.img}
+                description={car.description}
+              />
+            </div>
           ))}
         </div>
       </div>
