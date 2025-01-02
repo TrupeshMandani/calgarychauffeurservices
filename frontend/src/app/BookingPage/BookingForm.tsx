@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 
@@ -25,6 +25,8 @@ export function BookingForm() {
     null
   );
 
+  const router = useRouter(); // Initialize Next.js router
+
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
     if (place && place.formatted_address) {
@@ -37,6 +39,20 @@ export function BookingForm() {
     if (place && place.formatted_address) {
       setDropoffLocation(place.formatted_address);
     }
+  };
+
+  // Handle form submission with validation
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate fields
+    if (!pickupLocation || !dropoffLocation || !pickupDate || !pickupTime) {
+      alert("Please fill in all fields before proceeding.");
+      return;
+    }
+
+    // Navigate to the /vehicles page
+    router.push("/Vehicles");
   };
 
   return (
@@ -52,7 +68,7 @@ export function BookingForm() {
             <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">
               Book Your Ride
             </h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleFormSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label
@@ -74,7 +90,7 @@ export function BookingForm() {
                       value={pickupLocation}
                       onChange={(e) => setPickupLocation(e.target.value)}
                       required
-                      className="border-gray-300"
+                      className="border-gray-300 mt-2"
                     />
                   </Autocomplete>
                 </div>
@@ -98,7 +114,7 @@ export function BookingForm() {
                       value={dropoffLocation}
                       onChange={(e) => setDropoffLocation(e.target.value)}
                       required
-                      className="border-gray-300"
+                      className="border-gray-300 mt-2"
                     />
                   </Autocomplete>
                 </div>
@@ -118,7 +134,7 @@ export function BookingForm() {
                     value={pickupDate}
                     onChange={(e) => setPickupDate(e.target.value)}
                     required
-                    className="border-gray-300"
+                    className="border-gray-300 mt-2"
                   />
                 </div>
                 <div>
@@ -134,17 +150,18 @@ export function BookingForm() {
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
                     required
-                    className="border-gray-300"
+                    className="border-gray-300 mt-2"
                   />
                 </div>
               </div>
 
               <div className="mt-6">
-                <Link href="/vehicles">
-                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-6 flex items-center justify-center gap-2">
-                    <FaCar className="text-lg" /> Book Taxi Now
-                  </Button>
-                </Link>
+                <Button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-6 flex items-center justify-center gap-2"
+                >
+                  <FaCar className="text-lg" /> Book Taxi Now
+                </Button>
               </div>
             </form>
           </CardContent>
