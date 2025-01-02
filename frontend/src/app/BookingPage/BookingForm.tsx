@@ -47,10 +47,16 @@ export function BookingForm() {
 
   const getCurrentDateTime = () => {
     const now = new Date();
+    const currentYear = now.getFullYear();
     const currentDate = now.toISOString().split("T")[0];
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
-    return { date: currentDate, hour: currentHour, minute: currentMinute };
+    return {
+      date: currentDate,
+      hour: currentHour,
+      minute: currentMinute,
+      year: currentYear,
+    };
   };
 
   const handlePickupLocationChange = () => {
@@ -77,7 +83,8 @@ export function BookingForm() {
     const now = new Date();
     const selectedDateTime = new Date(`${pickupDate}T${pickupTime}`);
 
-    if (selectedDateTime < now) {
+    if (selectedDateTime <= now) {
+      setError("Please select a future date and time for your booking.");
       return false;
     }
     return true;
@@ -249,6 +256,13 @@ export function BookingForm() {
                     type="time"
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
+                    min={
+                      pickupDate === getCurrentDateTime().date
+                        ? `${getCurrentDateTime().hour}:${
+                            getCurrentDateTime().minute
+                          }`
+                        : undefined
+                    }
                     required
                     className="border-gray-300 mt-2"
                   />
