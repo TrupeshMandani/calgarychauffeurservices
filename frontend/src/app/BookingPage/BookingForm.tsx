@@ -1,14 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { LoadScript, Autocomplete } from "@react-google-maps/api";
+import {
+  LoadScript,
+  Autocomplete,
+  GoogleMap,
+  DirectionsRenderer,
+} from "@react-google-maps/api";
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaCar } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation"; // Import Next.js router
+import { useRouter } from "next/navigation";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 
@@ -18,6 +23,14 @@ export function BookingForm() {
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
 
+  const [pickupValid, setPickupValid] = useState(false);
+  const [dropoffValid, setDropoffValid] = useState(false);
+
+  const [directions, setDirections] =
+    useState<google.maps.DirectionsResult | null>(null);
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
+
   const autocompleteRefPickup = useRef<google.maps.places.Autocomplete | null>(
     null
   );
@@ -25,12 +38,15 @@ export function BookingForm() {
     null
   );
 
-  const router = useRouter(); // Initialize Next.js router
+  const router = useRouter();
 
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
     if (place && place.formatted_address) {
       setPickupLocation(place.formatted_address);
+      setPickupValid(true);
+    } else {
+      setPickupValid(false);
     }
   };
 
@@ -38,20 +54,46 @@ export function BookingForm() {
     const place = autocompleteRefDropoff.current?.getPlace();
     if (place && place.formatted_address) {
       setDropoffLocation(place.formatted_address);
+      setDropoffValid(true);
+    } else {
+      setDropoffValid(false);
     }
   };
 
-  // Handle form submission with validation
+  useEffect(() => {
+    if (pickupValid && dropoffValid) {
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: pickupLocation,
+          destination: dropoffLocation,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK && result) {
+            setDirections(result);
+            const leg = result.routes[0]?.legs[0];
+            if (leg) {
+              setDistance(leg.distance?.text || "N/A");
+              setDuration(leg.duration?.text || "N/A");
+            }
+          } else {
+            setDirections(null);
+            console.error("Directions request failed:", status);
+          }
+        }
+      );
+    }
+  }, [pickupLocation, dropoffLocation, pickupValid, dropoffValid]);
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate fields
-    if (!pickupLocation || !dropoffLocation || !pickupDate || !pickupTime) {
+    if (!pickupValid || !dropoffValid || !pickupDate || !pickupTime) {
       alert("Please fill in all fields before proceeding.");
       return;
     }
 
-    // Navigate to the /vehicles page
     router.push("/Vehicles");
   };
 
@@ -75,8 +117,7 @@ export function BookingForm() {
                     htmlFor="pickup"
                     className="text-gray-700 font-medium flex items-center gap-2"
                   >
-                    <FaMapMarkerAlt className="text-amber-500" /> Pickup
-                    Location
+                    <FaMapMarkerAlt className="text-black" /> Pickup Location
                   </Label>
                   <Autocomplete
                     onLoad={(autocomplete) =>
@@ -99,8 +140,7 @@ export function BookingForm() {
                     htmlFor="dropoff"
                     className="text-gray-700 font-medium flex items-center gap-2"
                   >
-                    <FaMapMarkerAlt className="text-amber-500" /> Drop-off
-                    Location
+                    <FaMapMarkerAlt className="text-black" /> Drop-off Location
                   </Label>
                   <Autocomplete
                     onLoad={(autocomplete) =>
@@ -126,7 +166,7 @@ export function BookingForm() {
                     htmlFor="pickupDate"
                     className="text-gray-700 font-medium flex items-center gap-2"
                   >
-                    <FaCalendarAlt className="text-amber-500" /> Pickup Date
+                    <FaCalendarAlt className="text-black" /> Pickup Date
                   </Label>
                   <Input
                     id="pickupDate"
@@ -142,7 +182,7 @@ export function BookingForm() {
                     htmlFor="pickupTime"
                     className="text-gray-700 font-medium flex items-center gap-2"
                   >
-                    <FaClock className="text-amber-500" /> Pickup Time
+                    <FaClock className="text-black" /> Pickup Time
                   </Label>
                   <Input
                     id="pickupTime"
@@ -154,6 +194,36 @@ export function BookingForm() {
                   />
                 </div>
               </div>
+
+              {directions && (
+                <div className="mt-8">
+                  <GoogleMap
+                    mapContainerStyle={{
+                      height: "400px",
+                      width: "100%",
+                    }}
+                    zoom={10}
+                    center={{
+                      lat:
+                        directions.routes[0]?.legs[0]?.start_location.lat() ||
+                        0,
+                      lng:
+                        directions.routes[0]?.legs[0]?.start_location.lng() ||
+                        0,
+                    }}
+                  >
+                    <DirectionsRenderer directions={directions} />
+                  </GoogleMap>
+                  <div className="mt-4 text-gray-700">
+                    <p>
+                      <strong>Distance:</strong> {distance}
+                    </p>
+                    <p>
+                      <strong>Duration:</strong> {duration}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-6">
                 <Button
