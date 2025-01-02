@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
-// Google Maps API setup
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
 
@@ -25,9 +24,12 @@ export function BookingForm() {
   const [pickupTime, setPickupTime] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
+  const [error, setError] = useState("");
 
-  const [pickupValid, setPickupValid] = useState(false);
-  const [dropoffValid, setDropoffValid] = useState(false);
+  const [pickupCoords, setPickupCoords] =
+    useState<google.maps.LatLngLiteral | null>(null);
+  const [dropoffCoords, setDropoffCoords] =
+    useState<google.maps.LatLngLiteral | null>(null);
 
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
@@ -45,57 +47,76 @@ export function BookingForm() {
 
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
-    if (place && place.formatted_address) {
-      setPickupLocation(place.formatted_address);
-      setPickupValid(true);
-    } else {
-      setPickupValid(false);
+    if (place) {
+      setPickupLocation(place.formatted_address || "");
+      setPickupCoords(place.geometry?.location?.toJSON() || null);
+      setError("");
     }
-    setDirections(null); // Clear directions when pickup location changes
+    setDirections(null);
   };
 
   const handleDropoffLocationChange = () => {
     const place = autocompleteRefDropoff.current?.getPlace();
-    if (place && place.formatted_address) {
-      setDropoffLocation(place.formatted_address);
-      setDropoffValid(true);
-    } else {
-      setDropoffValid(false);
+    if (place) {
+      setDropoffLocation(place.formatted_address || "");
+      setDropoffCoords(place.geometry?.location?.toJSON() || null);
+      setError("");
     }
-    setDirections(null); // Clear directions when drop-off location changes
+    setDirections(null);
   };
 
   useEffect(() => {
-    if (pickupValid && dropoffValid) {
+    const calculateRoute = async () => {
+      if (!pickupCoords || !dropoffCoords) return;
+
       const directionsService = new google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: pickupLocation,
-          destination: dropoffLocation,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK && result) {
-            setDirections(result);
-            const leg = result.routes[0]?.legs[0];
-            if (leg) {
-              setDistance(leg.distance?.text || "N/A");
-              setDuration(leg.duration?.text || "N/A");
-            }
-          } else {
-            setDirections(null);
-            console.error("Directions request failed:", status);
+
+      try {
+        const result = await new Promise<google.maps.DirectionsResult>(
+          (resolve, reject) => {
+            directionsService.route(
+              {
+                origin: pickupCoords,
+                destination: dropoffCoords,
+                travelMode: google.maps.TravelMode.DRIVING,
+              },
+              (response, status) => {
+                if (status === google.maps.DirectionsStatus.OK && response) {
+                  resolve(response);
+                } else {
+                  reject(status);
+                }
+              }
+            );
           }
+        );
+
+        setDirections(result);
+        const leg = result.routes[0]?.legs[0];
+        if (leg) {
+          setDistance(leg.distance?.text || "N/A");
+          setDuration(leg.duration?.text || "N/A");
         }
-      );
-    }
-  }, [pickupValid, dropoffValid, pickupLocation, dropoffLocation]);
+        setError("");
+      } catch (status) {
+        console.error("Directions request failed:", status);
+        setError(
+          "Unable to calculate route. Please check the addresses and try again."
+        );
+        setDirections(null);
+        setDistance("");
+        setDuration("");
+      }
+    };
+
+    calculateRoute();
+  }, [pickupCoords, dropoffCoords]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!pickupValid || !dropoffValid || !pickupDate || !pickupTime) {
-      alert("Please fill in all fields before proceeding.");
+    if (!pickupCoords || !dropoffCoords || !pickupDate || !pickupTime) {
+      setError("Please fill in all fields before proceeding.");
       return;
     }
 
@@ -118,6 +139,11 @@ export function BookingForm() {
             <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">
               Book Your Ride
             </h2>
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                {error}
+              </div>
+            )}
             <form className="space-y-6" onSubmit={handleFormSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -132,6 +158,7 @@ export function BookingForm() {
                       (autocompleteRefPickup.current = autocomplete)
                     }
                     onPlaceChanged={handlePickupLocationChange}
+                    options={{ types: ["address"] }}
                   >
                     <Input
                       id="pickup"
@@ -155,6 +182,7 @@ export function BookingForm() {
                       (autocompleteRefDropoff.current = autocomplete)
                     }
                     onPlaceChanged={handleDropoffLocationChange}
+                    options={{ types: ["address"] }}
                   >
                     <Input
                       id="dropoff"
@@ -211,14 +239,7 @@ export function BookingForm() {
                       width: "100%",
                     }}
                     zoom={10}
-                    center={{
-                      lat:
-                        directions.routes[0]?.legs[0]?.start_location.lat() ||
-                        0,
-                      lng:
-                        directions.routes[0]?.legs[0]?.start_location.lng() ||
-                        0,
-                    }}
+                    center={pickupCoords || { lat: 0, lng: 0 }}
                   >
                     <DirectionsRenderer directions={directions} />
                   </GoogleMap>
