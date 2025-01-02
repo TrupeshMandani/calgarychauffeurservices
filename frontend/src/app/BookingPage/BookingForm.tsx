@@ -7,6 +7,7 @@ import {
   Autocomplete,
   GoogleMap,
   DirectionsRenderer,
+  Libraries,
 } from "@react-google-maps/api";
 import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaCar } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
+// Google Maps API setup
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
+const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
 
 export function BookingForm() {
   const [pickupDate, setPickupDate] = useState("");
@@ -48,6 +51,7 @@ export function BookingForm() {
     } else {
       setPickupValid(false);
     }
+    setDirections(null); // Clear directions when pickup location changes
   };
 
   const handleDropoffLocationChange = () => {
@@ -58,6 +62,7 @@ export function BookingForm() {
     } else {
       setDropoffValid(false);
     }
+    setDirections(null); // Clear directions when drop-off location changes
   };
 
   useEffect(() => {
@@ -84,7 +89,7 @@ export function BookingForm() {
         }
       );
     }
-  }, [pickupLocation, dropoffLocation, pickupValid, dropoffValid]);
+  }, [pickupValid, dropoffValid, pickupLocation, dropoffLocation]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +103,10 @@ export function BookingForm() {
   };
 
   return (
-    <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+    <LoadScript
+      googleMapsApiKey={GOOGLE_MAPS_API_KEY}
+      libraries={GOOGLE_MAPS_LIBRARIES}
+    >
       <motion.div
         className="max-w-4xl mx-auto -mt-20 relative z-10"
         initial={{ scale: 0.9, opacity: 0 }}
