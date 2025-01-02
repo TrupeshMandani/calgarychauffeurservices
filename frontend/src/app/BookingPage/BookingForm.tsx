@@ -45,6 +45,14 @@ export function BookingForm() {
 
   const router = useRouter();
 
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const currentDate = now.toISOString().split("T")[0];
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    return { date: currentDate, hour: currentHour, minute: currentMinute };
+  };
+
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
     if (place) {
@@ -63,6 +71,16 @@ export function BookingForm() {
       setError("");
     }
     setDirections(null);
+  };
+
+  const validateDateTime = () => {
+    const now = new Date();
+    const selectedDateTime = new Date(`${pickupDate}T${pickupTime}`);
+
+    if (selectedDateTime < now) {
+      return false;
+    }
+    return true;
   };
 
   useEffect(() => {
@@ -114,9 +132,14 @@ export function BookingForm() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     if (!pickupCoords || !dropoffCoords || !pickupDate || !pickupTime) {
       setError("Please fill in all fields before proceeding.");
+      return;
+    }
+
+    if (!validateDateTime()) {
       return;
     }
 
@@ -209,6 +232,7 @@ export function BookingForm() {
                     type="date"
                     value={pickupDate}
                     onChange={(e) => setPickupDate(e.target.value)}
+                    min={getCurrentDateTime().date}
                     required
                     className="border-gray-300 mt-2"
                   />
