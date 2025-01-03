@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,7 +6,7 @@ import Script from "next/script";
 declare const Square: any;
 
 export default function CardForm() {
-  const [status, setStatus] = useState<string>("Loading payment form...");
+  const [status, setStatus] = useState<string>("");
   const [card, setCard] = useState<any>(null);
   const [showCardForm, setShowCardForm] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -36,7 +35,8 @@ export default function CardForm() {
     try {
       const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
       const locationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID;
-      const environment = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "PRODUCTION";
+      const environment =
+        process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT || "PRODUCTION";
 
       if (!appId || !locationId) {
         setStatus("Missing Square configuration.");
@@ -125,11 +125,21 @@ export default function CardForm() {
   const renderCustomerDetails = () => (
     <div className="mb-4 p-4 border rounded bg-gray-100">
       <h3 className="text-lg font-bold">Customer Details</h3>
-      <p><strong>First Name:</strong> {customerData.firstName}</p>
-      <p><strong>Last Name:</strong> {customerData.lastName}</p>
-      <p><strong>Email:</strong> {customerData.email}</p>
-      <p><strong>Phone:</strong> {customerData.phoneNumber}</p>
-      <p><strong>Address:</strong> {customerData.address}</p>
+      <p>
+        <strong>First Name:</strong> {customerData.firstName}
+      </p>
+      <p>
+        <strong>Last Name:</strong> {customerData.lastName}
+      </p>
+      <p>
+        <strong>Email:</strong> {customerData.email}
+      </p>
+      <p>
+        <strong>Phone:</strong> {customerData.phoneNumber}
+      </p>
+      <p>
+        <strong>Address:</strong> {customerData.address}
+      </p>
     </div>
   );
 
@@ -137,8 +147,13 @@ export default function CardForm() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-green-100">
         <div className="text-center p-6 bg-white rounded shadow-lg">
-          <h2 className="text-2xl font-bold text-green-600">Payment Successful!</h2>
-          <p className="mt-2">Thank you for your payment. Your transaction has been completed successfully.</p>
+          <h2 className="text-2xl font-bold text-green-600">
+            Payment Successful!
+          </h2>
+          <p className="mt-2">
+            Thank you for your payment. Your transaction has been completed
+            successfully.
+          </p>
           {renderCustomerDetails()}
           <div className="mt-4">
             <svg
@@ -166,7 +181,10 @@ export default function CardForm() {
       <div className="flex items-center justify-center min-h-screen bg-red-100">
         <div className="text-center p-6 bg-white rounded shadow-lg">
           <h2 className="text-2xl font-bold text-red-600">Payment Failed!</h2>
-          <p className="mt-2">Unfortunately, we were unable to process your payment. Please try again.</p>
+          <p className="mt-2">
+            Unfortunately, we were unable to process your payment. Please try
+            again.
+          </p>
           {renderCustomerDetails()}
         </div>
       </div>
@@ -182,9 +200,7 @@ export default function CardForm() {
         onError={() => console.error("Failed to load Square SDK.")}
       />
 
-      <div className="bg-white max-w-md mx-auto p-4" >
-       
-
+      <div className="bg-white max-w-md mx-auto p-4">
         {!showCardForm ? (
           <>
             <div className="mb-4">
