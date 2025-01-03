@@ -9,19 +9,23 @@ import {
   DirectionsRenderer,
   Libraries,
 } from "@react-google-maps/api";
-import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaCar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCar, FaClock, FaCalendarAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
 
 export function BookingForm() {
-  const [pickupDate, setPickupDate] = useState("");
-  const [pickupTime, setPickupTime] = useState("");
+  const [pickupDate, setPickupDate] = useState(dayjs());
+  const [pickupTime, setPickupTime] = useState(dayjs());
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [error, setError] = useState("");
@@ -45,20 +49,6 @@ export function BookingForm() {
 
   const router = useRouter();
 
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentDate = now.toISOString().split("T")[0];
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    return {
-      date: currentDate,
-      hour: currentHour,
-      minute: currentMinute,
-      year: currentYear,
-    };
-  };
-
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
     if (place) {
@@ -80,10 +70,12 @@ export function BookingForm() {
   };
 
   const validateDateTime = () => {
-    const now = new Date();
-    const selectedDateTime = new Date(`${pickupDate}T${pickupTime}`);
+    const now = dayjs();
+    const selectedDateTime = pickupDate
+      .hour(pickupTime.hour())
+      .minute(pickupTime.minute());
 
-    if (selectedDateTime <= now) {
+    if (selectedDateTime.isBefore(now)) {
       setError("Please select a future date and time for your booking.");
       return false;
     }
@@ -153,8 +145,8 @@ export function BookingForm() {
     const queryParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation,
-      pickupDate,
-      pickupTime,
+      pickupDate: pickupDate.format("YYYY-MM-DD"),
+      pickupTime: pickupTime.format("HH:mm"),
       distance,
       duration,
     }).toString();
@@ -238,42 +230,37 @@ export function BookingForm() {
                 <div>
                   <Label
                     htmlFor="pickupDate"
-                    className="text-gray-700 font-medium flex items-center gap-2"
+                    className="text-gray-700 font-medium mb-2 flex items-center gap-2"
                   >
-                    <FaCalendarAlt className="text-black" /> Pickup Date
+                    <FaCalendarAlt className="text-black" />
+                    Pickup Date
                   </Label>
-                  <Input
-                    id="pickupDate"
-                    type="date"
-                    value={pickupDate}
-                    onChange={(e) => setPickupDate(e.target.value)}
-                    min={getCurrentDateTime().date}
-                    required
-                    className="border-gray-300 mt-2"
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      value={pickupDate}
+                      onChange={(newValue) =>
+                        setPickupDate(newValue || dayjs())
+                      }
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </LocalizationProvider>
                 </div>
                 <div>
                   <Label
                     htmlFor="pickupTime"
-                    className="text-gray-700 font-medium flex items-center gap-2"
+                    className="text-gray-700 mb-2 font-medium flex items-center gap-2"
                   >
                     <FaClock className="text-black" /> Pickup Time
                   </Label>
-                  <Input
-                    id="pickupTime"
-                    type="time"
-                    value={pickupTime}
-                    onChange={(e) => setPickupTime(e.target.value)}
-                    min={
-                      pickupDate === getCurrentDateTime().date
-                        ? `${getCurrentDateTime().hour}:${
-                            getCurrentDateTime().minute
-                          }`
-                        : undefined
-                    }
-                    required
-                    className="border-gray-300 mt-2"
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                      value={pickupTime}
+                      onChange={(newValue) =>
+                        setPickupTime(newValue || dayjs())
+                      }
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </LocalizationProvider>
                 </div>
               </div>
 
