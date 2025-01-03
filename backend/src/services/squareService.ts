@@ -51,6 +51,8 @@ export const saveCustomerAndCard = async (
     firstName: string;
     lastName: string;
     email: string;
+    phoneNumber: string;
+    address: string;
   }
 ) => {
   try {
@@ -61,6 +63,10 @@ export const saveCustomerAndCard = async (
       givenName: customerData.firstName,
       familyName: customerData.lastName,
       emailAddress: customerData.email,
+      phoneNumber: customerData.phoneNumber,
+      address: {
+        addressLine1: customerData.address,
+      },
     });
     console.log("Customer Response:", customerResponse);
 

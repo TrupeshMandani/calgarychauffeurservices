@@ -139,7 +139,6 @@ export function BookingForm() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (!pickupCoords || !dropoffCoords || !pickupDate || !pickupTime) {
       setError("Please fill in all fields before proceeding.");
@@ -150,9 +149,18 @@ export function BookingForm() {
       return;
     }
 
-    router.push("/Vehicles");
-  };
+    // Use a template string to pass query parameters in the URL
+    const queryParams = new URLSearchParams({
+      pickupLocation,
+      dropoffLocation,
+      pickupDate,
+      pickupTime,
+      distance,
+      duration,
+    }).toString();
 
+    router.push(`/PaymentPage?${queryParams}`);
+  };
   return (
     <LoadScript
       googleMapsApiKey={GOOGLE_MAPS_API_KEY}

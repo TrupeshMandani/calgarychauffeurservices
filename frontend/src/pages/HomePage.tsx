@@ -4,7 +4,6 @@ import Footer from "@/app/Components/Footer";
 import HeroSection from "@/app/Components/HeroSection";
 
 import WhyChooseUs from "@/app/Components/WhyChooseUs";
-import CardForm from "@/app/Components/CardForm";
 import NavBar from "@/app/Components/NavBar";
 
 const HomePage = () => {
@@ -13,7 +12,7 @@ const HomePage = () => {
       <NavBar />
       <HeroSection />
       <FeaturedCars />
-      <CardForm />
+     
       <WhyChooseUs />
       <Footer />
     </div>
