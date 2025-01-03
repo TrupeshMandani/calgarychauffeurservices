@@ -61,6 +61,10 @@ const saveCustomerAndCard = (cardToken, customerData) => __awaiter(void 0, void 
             givenName: customerData.firstName,
             familyName: customerData.lastName,
             emailAddress: customerData.email,
+            phoneNumber: customerData.phoneNumber,
+            address: {
+                addressLine1: customerData.address,
+            },
         });
         console.log("Customer Response:", customerResponse);
         const customerId = (_a = customerResponse.result.customer) === null || _a === void 0 ? void 0 : _a.id;
