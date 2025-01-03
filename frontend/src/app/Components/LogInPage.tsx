@@ -1,220 +1,128 @@
+'use client'
 
-"use client";
-import React from "react";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { firebaseApp } from "../_utils/Firebase";
-import {
-  
-  getAuth,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
-import "tailwindcss/tailwind.css";
+import React, { useState } from "react"
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { firebaseApp } from "../_utils/Firebase"
+import CardForm from "./CardForm"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { FaGoogle } from 'react-icons/fa'
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [signUpEmail, setSignUpEmail] = useState("");
-  const [signUpPassword, setSignUpPassword] = useState("");
+  const auth = getAuth(firebaseApp)
+  const googleProvider = new GoogleAuthProvider()
 
-  const auth = getAuth(firebaseApp);
-  const googleProvider = new GoogleAuthProvider();
-  const router = useRouter();
-
-  const handleEmailLogin = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
-      router.push("/PaymentPage");
+      await signInWithEmailAndPassword(auth, email, password)
+      setIsLoggedIn(true)
     } catch (err) {
-      setError("Failed to log in. Please check your credentials.");
+      setError("Failed to log in. Please check your credentials.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setError("");
+    setIsLoading(true)
+    setError("")
 
     try {
-      await signInWithPopup(auth, googleProvider);
-      alert("Login successful with Google!");
-      router.push("/PaymentPage");
+      await signInWithPopup(auth, googleProvider)
+      setIsLoggedIn(true)
     } catch (err) {
-      setError("Failed to log in with Google.");
+      setError("Failed to log in with Google.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const handleSignUp = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        signUpEmail,
-        signUpPassword
-      );
-      await updateProfile(userCredential.user, {
-        displayName: `${firstName} ${lastName}`,
-      });
-      alert("Account created successfully!");
-      setShowSignUp(false);
-      router.push("/PaymentPage");
-    } catch (err) {
-      setError("Failed to create account. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (isLoggedIn) {
+    return <CardForm />
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">
-          Calgary Chauffeur Service
-        </h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
-        {!showSignUp ? (
-          <>
-            <form onSubmit={handleEmailLogin}>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700">
-                  Email address
-                </label>
-                <input
+    <div className="flex items-center justify-center min-h-screen bg-[#f0eae6]  from-orange-100 to-orange-200">
+      <div className="w-full max-w-md">
+        <div className="bg-white shadow-2xl rounded-3xl overflow-hidden">
+          <div className="px-8 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+              <p className="text-gray-600 mt-2">Please sign in to your account</p>
+            </div>
+            {error && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                <p>{error}</p>
+              </div>
+            )}
+            <form onSubmit={handleEmailLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input
                   type="email"
                   id="email"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700">
-                  Password
-                </label>
-                <input
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
                   type="password"
                   id="password"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full py-2 bg-orange-500 text-white font-semibold rounded-lg"
+              <Button 
+                type="submit" 
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
                 disabled={isLoading}
               >
-                {isLoading ? "Logging in..." : "Log in"}
-              </button>
+                {isLoading ? "Signing in..." : "Sign in"}
+              </Button>
             </form>
-
-            <div className="flex items-center justify-between mt-6">
-              <button className="text-sm text-blue-500">
-                Forgot password?
-              </button>
-              <button
-                onClick={() => setShowSignUp(true)}
-                className="text-sm text-blue-500"
-              >
-                Sign up!
-              </button>
-            </div>
-
-            <div className="mt-4 text-center">
-              <p>OR</p>
-              <button
+            <div className="mt-8">
+              <Separator className="my-4">
+                <span className="px-2 text-gray-500">Or continue with</span>
+              </Separator>
+              <Button
                 onClick={handleGoogleLogin}
-                className="w-full py-2 mt-2 border text-gray-700 font-semibold rounded-lg"
+                variant="outline"
+                className="w-full mt-4 bg-white text-gray-700 hover:bg-gray-50"
               >
-                Continue with Google
-              </button>
+                <FaGoogle className="mr-2" />
+                Google
+              </Button>
             </div>
-          </>
-        ) : (
-          <form onSubmit={handleSignUp}>
-            <div className="mb-4">
-              <label className="block text-gray-700">First Name</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Last Name</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 border rounded-lg"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Email</label>
-              <input
-                type="email"
-                className="w-full px-4 py-2 border rounded-lg"
-                value={signUpEmail}
-                onChange={(e) => setSignUpEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-6">
-              <label className="block text-gray-700">Password</label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 border rounded-lg"
-                value={signUpPassword}
-                onChange={(e) => setSignUpPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full py-2 bg-green-500 text-white font-semibold rounded-lg"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing up..." : "Sign Up"}
-            </button>
-            <button
-              onClick={() => setShowSignUp(false)}
-              className="w-full mt-4 text-center text-blue-500"
-            >
-              Back to Login
-            </button>
-          </form>
-        )}
+          </div>
+        </div>
+        <p className="text-center text-gray-600 mt-8">
+          Don't have an account?{" "}
+          <a href="#" className="text-orange-500 hover:underline">
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
+

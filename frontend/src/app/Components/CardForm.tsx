@@ -177,12 +177,12 @@ export default function CardForm() {
     <>
       <Script
         src="https://web.squarecdn.com/v1/square.js"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
         onLoad={() => console.log("Square SDK loaded successfully.")}
         onError={() => console.error("Failed to load Square SDK.")}
       />
 
-      <div className="max-w-md mx-auto p-4">
+      <div className="bg-white max-w-md mx-auto p-4" >
        
 
         {!showCardForm ? (
@@ -283,5 +283,3 @@ export default function CardForm() {
     </>
   );
 }
-
-
