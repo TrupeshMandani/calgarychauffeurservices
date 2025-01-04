@@ -151,7 +151,7 @@ export function BookingForm() {
       duration,
     }).toString();
 
-    router.push(`/PaymentPage?${queryParams}`);
+    router.push(`/Vehicles?${queryParams}`);
   };
   return (
     <LoadScript
