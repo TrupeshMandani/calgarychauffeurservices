@@ -28,7 +28,7 @@ const CarCard: React.FC<CarCardProps> = ({
       <img
         src={img}
         alt={name}
-        className="w-full h-48 object-cover mb-4 rounded-md border border-gray-200"
+        className="w-full h-50 object-cover mb-4 rounded-md border border-gray-200"
       />
       <h2 className="text-xl font-bold text-gray-800 mb-2">{name}</h2>
       <p className="text-sm text-gray-600 mb-2">Type: {type}</p>
