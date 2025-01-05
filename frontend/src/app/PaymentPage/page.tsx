@@ -205,8 +205,6 @@ export default function PaymentPage() {
     duration: searchParams?.get("duration") || "N/A",
   };
 
-  
-
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
