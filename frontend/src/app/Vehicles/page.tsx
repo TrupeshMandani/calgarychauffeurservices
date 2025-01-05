@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
+import { useRouter } from "next/navigation";
 
 // Import Swiper styles
 import "swiper/css";
@@ -11,6 +12,7 @@ import "swiper/css/navigation";
 import CarCard from "../Components/CarCard";
 
 const Page = () => {
+  const router = useRouter();
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +55,26 @@ const Page = () => {
     acc[car.type].push(car);
     return acc;
   }, {} as Record<string, any[]>);
+
+  const handleCarSelect = (car: any) => {
+    const queryParams = new URLSearchParams(window.location.search); // Get booking details from URL
+    const bookingInfo = Object.fromEntries(queryParams.entries());
+
+    // Save booking and selected vehicle data in local storage
+    localStorage.setItem("bookingInfo", JSON.stringify(bookingInfo));
+    localStorage.setItem(
+      "selectedVehicle",
+      JSON.stringify({
+        name: car.name,
+        type: car.type,
+        price: car.price,
+        img: car.img,
+      })
+    );
+
+    // Navigate to the Payment Page
+    router.push("/PaymentPage");
+  };
 
   return (
     <div className="bg-gray-50 py-12">
@@ -108,13 +130,18 @@ const Page = () => {
                   carIndex: React.Key | null | undefined
                 ) => (
                   <SwiperSlide key={carIndex} className="pb-12">
-                    <CarCard
-                      name={car.name}
-                      type={car.type}
-                      price={car.price}
-                      img={car.img}
-                      description={""}
-                    />
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleCarSelect(car)}
+                    >
+                      <CarCard
+                        name={car.name}
+                        type={car.type}
+                        price={car.price}
+                        img={car.img}
+                        description={""}
+                      />
+                    </div>
                   </SwiperSlide>
                 )
               )}
