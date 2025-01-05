@@ -1,8 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer"; // Import useInView
-import CarCard from "./CarCard"; // Import the CarCard component
-import "animate.css"; // Import Animate.css
+import { useInView } from "react-intersection-observer";
+import CarCard from "./CarCard";
+import "animate.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 
 interface Car {
   description: string;
@@ -14,17 +18,15 @@ interface Car {
 
 const FeaturedCars: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
-  const [featuredCars, setFeaturedCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const { ref, inView } = useInView({
-    triggerOnce: true, // Trigger animation only once
-    threshold: 0.2, // Percentage of component visibility to trigger
+    triggerOnce: true,
+    threshold: 0.2,
   });
 
   useEffect(() => {
-    // Fetch cars data from the API
     const fetchCars = async () => {
       try {
         const response = await fetch("/api/cars");
@@ -36,7 +38,6 @@ const FeaturedCars: React.FC = () => {
           throw new Error("Invalid data format");
         }
         setCars(data);
-        selectUniqueTypeCars(data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -50,22 +51,6 @@ const FeaturedCars: React.FC = () => {
 
     fetchCars();
   }, []);
-
-  // Function to select 3 cars of different types
-  const selectUniqueTypeCars = (cars: Car[]) => {
-    const selectedCars: Car[] = [];
-    const carTypes = new Set<string>();
-
-    for (const car of cars) {
-      if (!carTypes.has(car.type)) {
-        selectedCars.push(car);
-        carTypes.add(car.type);
-      }
-      if (selectedCars.length === 3) break;
-    }
-
-    setFeaturedCars(selectedCars);
-  };
 
   if (loading) {
     return <p className="text-center py-12">Loading cars...</p>;
@@ -87,27 +72,41 @@ const FeaturedCars: React.FC = () => {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {featuredCars.map((car, index) => (
-            <div
-              key={car.name}
-              className={`${
-                inView ? "animate__animated animate__backInLeft" : "opacity-0"
-              }`}
-              style={{
-                animationDelay: `${index * 0.2}s`,
-                transition: "opacity 0.5s ease-out",
-              }}
-            >
-              <CarCard
-                name={car.name}
-                type={car.type}
-                price={car.price}
-                img={car.img}
-                description={car.description}
-              />
-            </div>
-          ))}
+        <div className="mt-12">
+          <Swiper
+            modules={[Pagination]}
+            pagination={{ clickable: true }}
+            spaceBetween={20}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+          >
+            {cars.map((car) => (
+              <SwiperSlide key={car.name}>
+                <div
+                  className={`${
+                    inView
+                      ? "animate__animated animate__backInLeft"
+                      : "opacity-0"
+                  }`}
+                  style={{
+                    transition: "opacity 0.5s ease-out",
+                  }}
+                >
+                  <CarCard
+                    name={car.name}
+                    type={car.type}
+                    price={car.price}
+                    img={car.img}
+                    description={car.description}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
     </div>

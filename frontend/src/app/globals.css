@@ -110,3 +110,18 @@ body {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
+.mySwiper {
+  width: 100%;
+  height: auto;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.parallax-bg {
+  background-size: cover;
+  background-position: center;
+}
