@@ -61,8 +61,8 @@ const FeaturedCars: React.FC = () => {
   }
 
   return (
-    <div ref={ref} className="bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div ref={ref} className="py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-8">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
             Featured Vehicles
@@ -76,7 +76,7 @@ const FeaturedCars: React.FC = () => {
           <Swiper
             modules={[Pagination]}
             pagination={{ clickable: true }}
-            spaceBetween={20}
+            spaceBetween={10}
             slidesPerView={1}
             breakpoints={{
               640: { slidesPerView: 1 },

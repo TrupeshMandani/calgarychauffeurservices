@@ -21,15 +21,15 @@ const CarCard: React.FC<CarCardProps> = ({
   return (
     <Atropos
       className="car-card relative bg-cream shadow-lg via-cream-200 border hover:shadow-2xl transition-transform transform hover:scale-105 rounded-md overflow-hidden"
-      activeOffset={20} // Reduced offset for more stability
+      activeOffset={4} // Reduced offset for more stability
       shadow={false} // Disabled shadow for simplicity
-      rotateXMax={10} // Reduced max rotation for X-axis
-      rotateYMax={10} // Reduced max rotation for Y-axis
+      rotateXMax={5} // Reduced max rotation for X-axis
+      rotateYMax={5} // Reduced max rotation for Y-axis
     >
       <img
         src={img}
         alt={name}
-        className="w-full h-50 object-cover"
+        className="w-full h-50  object-cover"
         data-atropos-offset="-2"
       />
       <div
