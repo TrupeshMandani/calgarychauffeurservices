@@ -20,7 +20,7 @@ const CarCard: React.FC<CarCardProps> = ({
   const router = useRouter();
 
   const handleBookingClick = () => {
-    router.push("/BookingPage");
+    router.push("/PaymentPage");
   };
 
   return (
