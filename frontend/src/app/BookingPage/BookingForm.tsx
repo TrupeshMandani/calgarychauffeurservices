@@ -49,6 +49,41 @@ export function BookingForm() {
 
   const router = useRouter();
 
+  // Save form data to local storage
+  const saveToLocalStorage = () => {
+    const formData = {
+      pickupDate: pickupDate.format("YYYY-MM-DD"),
+      pickupTime: pickupTime.format("HH:mm"),
+      pickupLocation,
+      dropoffLocation,
+      distance,
+      duration,
+    };
+    localStorage.setItem("bookingFormData", JSON.stringify(formData));
+  };
+
+  // Load form data from local storage
+  useEffect(() => {
+    const savedData = localStorage.getItem("bookingFormData");
+    if (savedData) {
+      const {
+        pickupDate,
+        pickupTime,
+        pickupLocation,
+        dropoffLocation,
+        distance,
+        duration,
+      } = JSON.parse(savedData);
+
+      setPickupDate(dayjs(pickupDate));
+      setPickupTime(dayjs(pickupTime));
+      setPickupLocation(pickupLocation);
+      setDropoffLocation(dropoffLocation);
+      setDistance(distance || "");
+      setDuration(duration || "");
+    }
+  }, []);
+
   const handlePickupLocationChange = () => {
     const place = autocompleteRefPickup.current?.getPlace();
     if (place) {
@@ -57,6 +92,7 @@ export function BookingForm() {
       setError("");
     }
     setDirections(null);
+    saveToLocalStorage();
   };
 
   const handleDropoffLocationChange = () => {
@@ -67,6 +103,7 @@ export function BookingForm() {
       setError("");
     }
     setDirections(null);
+    saveToLocalStorage();
   };
 
   const validateDateTime = () => {
@@ -115,6 +152,7 @@ export function BookingForm() {
           setDuration(leg.duration?.text || "N/A");
         }
         setError("");
+        saveToLocalStorage();
       } catch (status) {
         console.error("Directions request failed:", status);
         setError(
@@ -141,7 +179,8 @@ export function BookingForm() {
       return;
     }
 
-    // Use a template string to pass query parameters in the URL
+    saveToLocalStorage();
+
     const queryParams = new URLSearchParams({
       pickupLocation,
       dropoffLocation,
@@ -151,7 +190,7 @@ export function BookingForm() {
       duration,
     }).toString();
 
-    router.push(`/PaymentPage?${queryParams}`);
+    router.push(`/Vehicles?${queryParams}`);
   };
   return (
     <LoadScript
