@@ -157,6 +157,7 @@ export default function PaymentPage() {
                     Complete Your Payment
                   </motion.h2>
                   <CardForm />
+
                 </>
               ) : (
                 <>
