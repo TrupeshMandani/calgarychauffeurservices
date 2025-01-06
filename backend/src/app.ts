@@ -34,7 +34,8 @@
 // });
 import express from "express";
 import cors from "cors";
-import squareRoutes from "./routes/squareRoutes"; // Ensure this file exists and is correct
+import squareRoutes from "./routes/squareRoutes";
+import notificationRoutes from "./routes/notificationRoutes"; // Ensure this file exists and is correct
 
 // Initialize Express app
 const app = express();
@@ -56,6 +57,7 @@ app.get("/api/test", (req, res) => {
 
 // Use routes from squareRoutes
 app.use("/api", squareRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
