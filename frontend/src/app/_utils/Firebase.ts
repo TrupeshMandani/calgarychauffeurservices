@@ -1,7 +1,8 @@
 // firebase.ts
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getDatabase, ref, get, set } from "firebase/database"; 
+import { getFirestore, collection, addDoc, doc, setDoc, getDocs } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -12,7 +13,7 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const googleProvider = new GoogleAuthProvider();
-
-export { auth, googleProvider, getDatabase, ref, get, set };
+export const auth = getAuth(firebaseApp);
+export const googleProvider = new GoogleAuthProvider();
+export const db = getFirestore(firebaseApp);
+export { collection, addDoc, doc, setDoc, getDocs };
