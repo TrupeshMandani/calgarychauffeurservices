@@ -145,6 +145,25 @@ export default function CardForm() {
 
       const cardToken = result.token;
 
+      const saveCardResponse = await fetch("http://localhost:3000/api/save-card", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cardToken,
+          customerData,
+        }),
+      });
+      
+  
+      const saveCardData = await saveCardResponse.json();
+      if (!saveCardData.success) {
+        setStatus("Failed to save card and customer.");
+        setPaymentFailed(true);
+        return;
+      }
+  
+      setStatus("Payment successful! Processing notifications...");
+
       // Step 2: Notify customer and client
       const customerNotifyResponse = await fetch(
         "http://localhost:3000/api/notifications/notify-customer",
