@@ -1,25 +1,26 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../_utils/Firebase"; // Adjust this path based on your project structure
 
 declare const Square: any;
 
 export default function CardForm() {
-  const [status, setStatus] = useState<string>("");
-  const [card, setCard] = useState<any>(null);
-  const [showCardForm, setShowCardForm] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [paymentFailed, setPaymentFailed] = useState(false);
+  const [status, setStatus] = useState<string>(""); // Status message for payment process
+  const [card, setCard] = useState<any>(null); // Square Card instance
+  const [showCardForm, setShowCardForm] = useState(false); // Show/hide card form
+  const [paymentSuccess, setPaymentSuccess] = useState(false); // Payment success flag
+  const [paymentFailed, setPaymentFailed] = useState(false); // Payment failure flag
   const [customerData, setCustomerData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
     address: "",
-  });
+  }); // Customer data state
 
   const [bookingInfo, setBookingInfo] = useState({
     pickupLocation: "N/A",
@@ -28,8 +29,9 @@ export default function CardForm() {
     pickupTime: "N/A",
     distance: "N/A",
     duration: "N/A",
-  });
+  }); // Booking data state
 
+  // Fetch authenticated user's email from Firebase Auth
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -40,20 +42,39 @@ export default function CardForm() {
         }));
       }
     });
-
     return () => unsubscribe();
   }, []);
 
-  const isFormValid = () => {
-    return (
-      customerData.firstName &&
-      customerData.lastName &&
-      customerData.email &&
-      customerData.phoneNumber &&
-      customerData.address
-    );
-  };
+  // Fetch bookingInfo from Firestore
+  useEffect(() => {
+    const fetchBookingInfo = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get("bookingId");
 
+      if (!bookingId) {
+        console.error("No booking ID found in the URL.");
+        setStatus("Failed to load booking details.");
+        return;
+      }
+
+      try {
+        const bookingDoc = await getDoc(doc(db, "bookings", bookingId));
+        if (!bookingDoc.exists()) {
+          console.error("No booking data found in Firestore.");
+          setStatus("Booking not found.");
+          return;
+        }
+        setBookingInfo(bookingDoc.data() as typeof bookingInfo);
+      } catch (error) {
+        console.error("Error fetching booking info:", error);
+        setStatus("Failed to load booking information.");
+      }
+    };
+
+    fetchBookingInfo();
+  }, []);
+
+  // Initialize Square payment form
   const initializeSquare = async () => {
     try {
       const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID;
@@ -95,79 +116,35 @@ export default function CardForm() {
     }
   }, [showCardForm]);
 
-  // const handlePayment = async () => {
-  //   if (!card) {
-  //     setStatus("Card form is not ready.");
-  //     return;
-  //   }
+  // Validate customer form fields
+  const isFormValid = () => {
+    return (
+      customerData.firstName &&
+      customerData.lastName &&
+      customerData.email &&
+      customerData.phoneNumber &&
+      customerData.address
+    );
+  };
 
-  //   try {
-  //     const result = await card.tokenize();
-  //     if (result.status !== "OK") {
-  //       setStatus("Card tokenization failed.");
-  //       setPaymentFailed(true);
-  //       return;
-  //     }
-
-  //     const response = await fetch("http://localhost:3000/api/save-card", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         cardToken: result.token,
-  //         customerData,
-  //       }),
-  //     });
-
-  //     const data = await response.json();
-  //     if (data.success) {
-  //       setStatus("Payment successful!");
-  //       setPaymentSuccess(true);
-  //     } else {
-  //       setStatus("Failed to save card and customer.");
-  //       setPaymentFailed(true);
-  //     }
-  //   } catch (error) {
-  //     setStatus("An error occurred while saving card and customer.");
-  //     setPaymentFailed(true);
-  //   }
-  // };
-
+  // Handle payment submission
   const handlePayment = async () => {
     if (!card) {
       setStatus("Card form is not ready.");
       return;
     }
-  
+
     try {
-      // Step 1: Tokenize the card using Square SDK
+      // Step 1: Tokenize card
       const result = await card.tokenize();
       if (result.status !== "OK") {
         setStatus("Card tokenization failed.");
         setPaymentFailed(true);
         return;
       }
-  
+
       const cardToken = result.token;
-  
-      // Step 2: Prepare customer and booking details
-      const customerDetails = {
-        firstName: customerData.firstName,
-        lastName: customerData.lastName,
-        email: customerData.email,
-        phoneNumber: customerData.phoneNumber,
-        address: customerData.address,
-      };
-  
-      const bookingDetails = {
-        pickupLocation: bookingInfo.pickupLocation,
-        dropoffLocation: bookingInfo.dropoffLocation,
-        pickupDate: bookingInfo.pickupDate,
-        pickupTime: bookingInfo.pickupTime,
-        distance: bookingInfo.distance,
-        duration: bookingInfo.duration,
-      };
-  
-      // Step 3: Save card and customer information
+
       const saveCardResponse = await fetch("http://localhost:3000/api/save-card", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -186,56 +163,57 @@ export default function CardForm() {
       }
   
       setStatus("Payment successful! Processing notifications...");
-  
-      // Step 4: Send customer notification
-      const customerNotifyResponse = await fetch("http://localhost:3000/api/notifications/notify-customer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerData: customerDetails,
-          bookingInfo: bookingDetails,
-        }),
-      });
-  
+
+      // Step 2: Notify customer and client
+      const customerNotifyResponse = await fetch(
+        "http://localhost:3000/api/notifications/notify-customer",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ customerData, bookingInfo }),
+        }
+      );
+
       const customerNotifyData = await customerNotifyResponse.json();
       if (!customerNotifyData.success) {
         console.warn("Failed to notify customer:", customerNotifyData.error);
       }
-  
-      // Step 5: Send client notification
-      const clientNotifyResponse = await fetch("http://localhost:3000/api/notifications/notify-client", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clientData: {
-            name: "Your Client's Name",
-            email: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
-            phoneNumber: process.env.NEXT_PUBLIC_CLIENT_PHONE_NUMBER,
-          },
-          bookingInfo: bookingDetails,
-        }),
-      });
-      
+
+      const clientNotifyResponse = await fetch(
+        "http://localhost:3000/api/notifications/notify-client",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clientData: {
+              email: process.env.NEXT_PUBLIC_CLIENT_EMAIL, // Ensure this is set correctly in .env
+            },
+            customerData: customerData,
+            bookingInfo: bookingInfo,
+          }),
+        }
+      );
       const clientNotifyData = await clientNotifyResponse.json();
       if (!clientNotifyData.success) {
         console.warn("Failed to notify client:", clientNotifyData.error);
       }
-  
-      // Step 6: Update UI to reflect success
+
       setPaymentSuccess(true);
-      setStatus("Payment completed! Notifications sent to customer and client.");
+      setStatus("Payment successful! Notifications sent.");
     } catch (error) {
-      console.error("Error during payment handling:", error);
-      setStatus("An error occurred during payment processing.");
+      console.error("Error processing payment:", error);
+      setStatus("Payment failed.");
       setPaymentFailed(true);
     }
   };
-  
+
+  // Handle customer form field changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCustomerData({ ...customerData, [name]: value });
   };
 
+  // Handle customer form submission
   const handleSubmitCustomerInfo = () => {
     if (isFormValid()) {
       setShowCardForm(true);
@@ -255,17 +233,15 @@ export default function CardForm() {
 
       <div className="bg-white max-w-md mx-auto p-4">
         {paymentSuccess ? (
-          <div
-            className="p-4 bg-green-100 text-green-800 rounded shadow-md text-center animate-fade-in"
-            style={{ animationDuration: "1s" }}
-          >
+          <div className="p-4 bg-green-100 text-green-800 rounded shadow-md text-center">
             <h2 className="text-xl font-bold mb-2">Payment Successful!</h2>
-            <p>Your Booking has Conformed.</p>
+            <p>Your booking has been confirmed.</p>
           </div>
         ) : (
           <>
             {!showCardForm ? (
               <>
+                {/* Customer Information Form */}
                 <div className="mb-4">
                   <label className="block mb-2">First Name</label>
                   <input
