@@ -1,4 +1,7 @@
 import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
 
 interface ServiceCardProps {
   title: string;
@@ -12,11 +15,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   image,
 }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <img src={image} alt={title} className="w-full h-56 object-cover" />
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="relative h-48">
+        <Image src={image} alt={title} layout="fill" objectFit="cover" />
+      </div>
       <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-800">{title}</h3>
-        <p className="mt-3 text-gray-600">{description}</p>
+        <h3 className="text-xl font-semibold mb-2">{title}</h3>
+        <p className="text-gray-600 mb-4">{description}</p>
+        <Button variant="outline" size="sm">
+          Learn More <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
