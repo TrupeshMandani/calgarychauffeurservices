@@ -2,115 +2,167 @@
 
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion"; // Import Framer Motion
+import "animate.css"; // Import Animate.css
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-
-const services = [
-  {
-    title: "Wedding Events",
-    description:
-      "Alpha Chauffeurs offers a range of luxurious transportation options to make your wedding day even more special...",
-    images: [
-      "/DALL·E 2025-01-10 15.07.18 - A luxury white car decorated with elegant ribbons and flowers, parked in front of a beautiful wedding venue with a bride and groom nearby. The setting.webp",
-      "/DALL·E 2025-01-10 15.08.32 - A luxurious white car decorated with intricate floral arrangements and elegant ribbons, parked in front of a grand palace-style wedding venue with gol.webp",
-    ],
-  },
-  {
-    title: "Corporate Travel",
-    description:
-      "Tailored chauffeur services for executives and business professionals, ensuring reliability and professionalism...",
-    images: [
-      "/DALL·E 2025-01-10 15.09.56 - A sleek black luxury sedan parked in front of a modern corporate building with glass facades. A professional chauffeur in a suit holds the door open, .webp",
-      "/DALL·E 2025-01-10 15.10.23 - An ultra-luxurious black limousine parked outside a towering modern corporate skyscraper with glass facades. A professional chauffeur in an elegant su.webp",
-    ],
-  },
-  {
-    title: "Airport Transfers",
-    description:
-      "Experience timely, reliable, and luxurious transportation to and from the airport with Alpha Chauffeurs...",
-    images: [
-      "/DALL·E 2025-01-10 15.12.04 - A sleek black luxury car parked at an airport terminal with a professional chauffeur in a suit standing by the car, ready to assist. The background fe.webp",
-      "/DALL·E 2025-01-10 15.12.57 - A luxurious black sedan parked near a modern airport terminal with a clear view of airplanes on the runway. A professional chauffeur in a sharp suit s.webp",
-    ],
-  },
-  {
-    title: "Graduation ",
-    description:
-      "Make your Graduation events unforgettable with our luxury chauffeur services tailored for your needs...",
-    images: [
-      "/DALL·E 2025-01-10 15.15.14 - A luxurious black limousine decorated with celebratory ribbons and balloons, parked in front of a grand university building. A graduate in a cap and g.webp",
-      "/DALL·E 2025-01-10 15.16.14 - A luxurious white stretch limousine parked in front of a grand university with intricate architectural details. The car is polished and decorated with.webp",
-    ],
-  },
-];
+import services from "./ServicesData"; // Import the services data from a separate file
+import NavBar from "../Components/NavBar";
 
 const ServicesPage = () => {
+  // Animation Variants for Framer Motion
+  const textAnimationLeft = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
+  const textAnimationRight = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
+  const imageAnimation = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen">
+      <NavBar />
       {/* Hero Section */}
       <section
-        className="relative bg-cover bg-center h-[60vh]"
+        className="relative bg-cover bg-center h-[60vh] animate__animated animate__fadeInDown"
         style={{
-          backgroundImage: "url('/path-to-your-hero-image.jpg')",
+          backgroundImage: "url('/MainCity.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 text-center text-white flex flex-col items-center justify-center h-full">
-          <h1 className="text-5xl font-extrabold mb-4">Our Services</h1>
-          <p className="text-xl max-w-2xl">
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={textAnimationLeft}
+            className="text-5xl font-extrabold mb-6"
+          >
+            Our Services
+          </motion.h1>
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={textAnimationRight}
+            className="text-xl max-w-2xl px-4"
+          >
             Experience luxury and comfort with our premium chauffeur services
-          </p>
+          </motion.p>
         </div>
       </section>
 
       {/* Services Section */}
       {services.map((service, index) => (
-        <section className="py-16" key={index}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className={`py-20 ${
+            index % 2 === 1
+              ? "bg-gray-200 mx-28 animate__animated animate__fadeInLeft"
+              : "bg-white animate__animated animate__fadeInRight"
+          }`}
+          key={index}
+        >
+          <div
+            className={`max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row ${
+              index % 2 === 1 ? "md:flex-row-reverse" : ""
+            } gap-12`}
+          >
             {/* Text Content */}
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            <motion.div
+              className="md:w-1/2 flex flex-col justify-center space-y-6"
+              variants={
+                index % 2 === 1 ? textAnimationRight : textAnimationLeft
+              }
+            >
+              <h2 className="text-4xl font-bold text-gray-800">
                 {service.title}
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 {service.description}
               </p>
-              <Button variant="outline" size="lg">
-                Book Now <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+              <div>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
+                >
+                  Book Now <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </motion.div>
             {/* Images */}
-            <div className="grid grid-cols-2 gap-4">
-              {service.images.map((image, imgIndex) => (
-                <Image
-                  key={imgIndex}
-                  src={image}
-                  alt={`${service.title} ${imgIndex + 1}`}
-                  width={300}
-                  height={200}
-                  className={`rounded-lg ${
-                    service.images.length === 1 && "col-span-2"
-                  }`}
-                />
-              ))}
-            </div>
+            <motion.div
+              className="md:w-1/2 flex justify-center items-center"
+              variants={imageAnimation}
+            >
+              <div className="grid grid-cols-2 gap-6">
+                {service.images.map((image, imgIndex) => (
+                  <Image
+                    key={imgIndex}
+                    src={image}
+                    alt={`${service.title} ${imgIndex + 1}`}
+                    width={400}
+                    height={250}
+                    className="rounded-lg shadow-lg"
+                  />
+                ))}
+              </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
       ))}
 
       {/* Call to Action Section */}
-      <section className="py-16 bg-yellow-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Experience Luxury?
-          </h2>
-          <p className="text-xl text-white mb-8">
-            Book your chauffeur service today and travel in style.
-          </p>
-          <Button size="lg" variant="secondary">
-            Book Now <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+      <section className="py-20 mt-10 bg-gray-900">
+        <motion.div
+          className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center animate__animated animate__zoomIn"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          <motion.h2
+            className="text-4xl font-bold text-white mb-6"
+            variants={textAnimationLeft}
+          >
+            Experience the Art of Luxury Travel
+          </motion.h2>
+          <motion.p
+            className="text-xl text-white mb-8 leading-relaxed"
+            variants={textAnimationRight}
+          >
+            Discover the ultimate chauffeur experience, tailored to your every
+            need.
+          </motion.p>
+          <motion.div variants={imageAnimation}>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
+            >
+              Book Your Luxury Ride <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </motion.div>
+        </motion.div>
       </section>
     </div>
   );
