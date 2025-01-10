@@ -39,11 +39,19 @@ const Page = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading all cars...</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <p className="text-lg text-gray-600">Loading all cars...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <p className="text-lg text-red-500">Error: {error}</p>
+      </div>
+    );
   }
 
   // Sort cars by their type
@@ -91,88 +99,84 @@ const Page = () => {
   };
 
   return (
-    <div className="bg-gray-50 py-12">
+    <div className="bg-gradient-to-b from-gray-100 via-white to-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            All Vehicles
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-extrabold text-gray-800 sm:text-5xl">
+            Explore Our Vehicles
           </h2>
-          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-            Browse our entire collection of vehicles
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600 sm:mt-6">
+            Select from our luxurious fleet for your next journey
           </p>
         </div>
 
         {/* Loop over each car type and display a Swiper for each type */}
         {Object.keys(groupedCars).map((carType, index) => (
-          <div key={index} className="mb-12 relative">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">{carType}</h3>
-            <Swiper
-              slidesPerView={1}
-              spaceBetween={30}
-              pagination={{
-                clickable: true,
-              }}
-              navigation={{
-                nextEl: `.swiper-button-next-${carType}`,
-                prevEl: `.swiper-button-prev-${carType}`,
-              }}
-              modules={[Pagination, Navigation]}
-              className="mySwiper"
-              breakpoints={{
-                640: {
-                  slidesPerView: 2,
-                  spaceBetween: 20,
-                },
-                768: {
-                  slidesPerView: 3,
-                  spaceBetween: 30,
-                },
-                1024: {
-                  slidesPerView: 4,
-                  spaceBetween: 30,
-                },
-              }}
-            >
-              {groupedCars[carType].map(
-                (
-                  car: {
-                    name: string;
-                    type: string;
-                    price: string;
-                    img: string;
-                  },
-                  carIndex: React.Key | null | undefined
-                ) => (
-                  <SwiperSlide key={carIndex} className="pb-12">
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => handleCarSelect(car)}
-                    >
-                      <CarCard
-                        name={car.name}
-                        type={car.type}
-                        price={car.price}
-                        img={car.img}
-                        description={""}
-                      />
-                    </div>
-                  </SwiperSlide>
-                )
-              )}
-            </Swiper>
+          <section
+            key={index}
+            className={`py-16 ${index % 2 === 0 ? "bg-white" : "bg-gray-200"}`}
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h3 className="text-3xl font-bold text-gray-800 mb-6">
+                {carType}
+              </h3>
+              <Swiper
+                slidesPerView={1}
+                spaceBetween={20}
+                pagination={{ clickable: true }}
+                navigation={{
+                  nextEl: `.swiper-button-next-${carType}`,
+                  prevEl: `.swiper-button-prev-${carType}`,
+                }}
+                modules={[Pagination, Navigation]}
+                className="mySwiper"
+                breakpoints={{
+                  640: { slidesPerView: 1 },
+                  768: { slidesPerView: 2, spaceBetween: 30 },
+                  1024: { slidesPerView: 3, spaceBetween: 40 },
+                }}
+              >
+                {groupedCars[carType].map(
+                  (
+                    car: {
+                      name: string;
+                      type: string;
+                      price: string;
+                      img: string;
+                    },
+                    carIndex: React.Key | null | undefined
+                  ) => (
+                    <SwiperSlide key={carIndex} className="pb-16">
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => handleCarSelect(car)}
+                      >
+                        <CarCard
+                          name={car.name}
+                          type={car.type}
+                          price={car.price}
+                          img={car.img}
+                          description={`Enjoy a comfortable and stylish ride in our ${car.name}.`}
+                        />
+                      </div>
+                    </SwiperSlide>
+                  )
+                )}
+              </Swiper>
 
-            {/* Navigation buttons outside the swiper */}
-            <div
-              className={`swiper-button-prev-${carType} absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-800 bg-white p-2 rounded-full shadow-lg z-10`}
-            >
-              {"<"}
+              {/* Navigation buttons */}
+              <button
+                className={`swiper-button-prev-${carType} absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-800 bg-white p-3 rounded-full shadow-md z-10 hover:bg-gray-200`}
+              >
+                {"<"}
+              </button>
+              <button
+                className={`swiper-button-next-${carType} absolute right-0 top-1/2 transform -translate-y-1/2 text-gray-800 bg-white p-3 rounded-full shadow-md z-10 hover:bg-gray-200`}
+              >
+                {">"}
+              </button>
             </div>
-            <div
-              className={`swiper-button-next-${carType} absolute right-0 top-1/2 transform -translate-y-1/2 text-gray-800 bg-white p-2 rounded-full shadow-lg z-10`}
-            >
-              {">"}
-            </div>
-          </div>
+          </section>
         ))}
       </div>
     </div>
