@@ -3,8 +3,7 @@ import express from "express";
 import cors from "cors";
 import squareRoutes from "./routes/squareRoutes";
 import notificationRoutes from "./routes/notificationRoutes"; // Ensure this file exists and is correct
-
-// Initialize Express app
+import helpRequestRoutes from "./routes/helpRequestRoutes";
 const app = express();
 
 // Middleware
@@ -25,6 +24,7 @@ app.get("/api/test", (req, res) => {
 // Use routes from squareRoutes
 app.use("/api", squareRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/help", helpRequestRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
