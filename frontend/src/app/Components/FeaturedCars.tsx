@@ -53,7 +53,11 @@ const FeaturedCars: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center py-12">Loading cars...</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <p className="text-lg text-gray-600">Loading...</p>
+      </div>
+    );
   }
 
   if (error) {
