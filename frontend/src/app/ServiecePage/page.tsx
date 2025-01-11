@@ -1,62 +1,168 @@
+"use client";
+
 import React from "react";
-import ServiceCard from "../Components/ServiceCard";
-import services from "./ServicesData";
+import Image from "next/image";
+import { motion } from "framer-motion"; // Import Framer Motion
+import "animate.css"; // Import Animate.css
+import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
+import services from "./ServicesData"; // Import the services data from a separate file
+import NavBar from "../Components/NavBar";
 
 const ServicesPage = () => {
+  // Animation Variants for Framer Motion
+  const textAnimationLeft = {
+    hidden: { opacity: 0, x: -50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
+  const textAnimationRight = {
+    hidden: { opacity: 0, x: 50 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
+  const imageAnimation = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
+
   return (
-    <div>
+    <div className="bg-white min-h-screen">
+      <NavBar />
       {/* Hero Section */}
       <section
-        className="relative bg-cover bg-center h-96"
+        className="relative bg-cover bg-center h-[60vh] animate__animated animate__fadeInDown"
         style={{
-          backgroundImage: "url('/images/hero-services.jpg')",
+          backgroundImage: "url('/MainCity.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 text-center text-white flex flex-col items-center justify-center h-full">
-          <h1 className="text-4xl font-extrabold mb-4">Our Services</h1>
-          <p className="text-lg max-w-2xl">
-            Discover our range of luxury chauffeur services tailored to your
-            needs.
-          </p>
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={textAnimationLeft}
+            className="text-5xl font-extrabold mb-6"
+          >
+            Our Services
+          </motion.h1>
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={textAnimationRight}
+            className="text-xl max-w-2xl px-4"
+          >
+            Experience luxury and comfort with our premium chauffeur services
+          </motion.p>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-gray-800 text-center mb-8">
-            Explore Our Services
-          </h2>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => (
-              <ServiceCard
-                key={index}
-                title={service.title}
-                description={service.description}
-                image={service.image}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-16 bg-yellow-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-extrabold text-white">
-            Ready to Experience Luxury?
-          </h2>
-          <p className="text-lg text-white mt-4">
-            Book your chauffeur service today and travel in style.
-          </p>
-          <a
-            href="/BookingPage"
-            className="mt-6 inline-block bg-white text-yellow-400 px-6 py-3 rounded-full text-lg font-bold hover:bg-gray-100 transition-colors duration-300"
+      {services.map((service, index) => (
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className={`py-20 ${
+            index % 2 === 1
+              ? "bg-gray-200 mx-28 animate__animated animate__fadeInLeft"
+              : "bg-white animate__animated animate__fadeInRight"
+          }`}
+          key={index}
+        >
+          <div
+            className={`max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row ${
+              index % 2 === 1 ? "md:flex-row-reverse" : ""
+            } gap-12`}
           >
-            Book Now
-          </a>
-        </div>
+            {/* Text Content */}
+            <motion.div
+              className="md:w-1/2 flex flex-col justify-center space-y-6"
+              variants={
+                index % 2 === 1 ? textAnimationRight : textAnimationLeft
+              }
+            >
+              <h2 className="text-4xl font-bold text-gray-800">
+                {service.title}
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {service.description}
+              </p>
+              <div>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
+                >
+                  Book Now <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </motion.div>
+            {/* Images */}
+            <motion.div
+              className="md:w-1/2 flex justify-center items-center"
+              variants={imageAnimation}
+            >
+              <div className="grid grid-cols-2 gap-6">
+                {service.images.map((image, imgIndex) => (
+                  <Image
+                    key={imgIndex}
+                    src={image}
+                    alt={`${service.title} ${imgIndex + 1}`}
+                    width={400}
+                    height={250}
+                    className="rounded-lg shadow-lg"
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+      ))}
+
+      {/* Call to Action Section */}
+      <section className="py-20 mt-10 bg-gray-900">
+        <motion.div
+          className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center animate__animated animate__zoomIn"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+        >
+          <motion.h2
+            className="text-4xl font-bold text-white mb-6"
+            variants={textAnimationLeft}
+          >
+            Experience the Art of Luxury Travel
+          </motion.h2>
+          <motion.p
+            className="text-xl text-white mb-8 leading-relaxed"
+            variants={textAnimationRight}
+          >
+            Discover the ultimate chauffeur experience, tailored to your every
+            need.
+          </motion.p>
+          <motion.div variants={imageAnimation}>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
+            >
+              Book Your Luxury Ride <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </motion.div>
+        </motion.div>
       </section>
     </div>
   );

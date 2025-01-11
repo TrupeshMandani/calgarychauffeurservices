@@ -1,24 +1,26 @@
-// LoginPage.tsx (updated version)
 "use client";
 
 import React, { useState } from "react";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { firebaseApp } from "../_utils/Firebase";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { FaGoogle } from "react-icons/fa";
 
-interface LoginPageProps {
-  onLoginSuccess: () => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter(); // Initialize the router
 
   const auth = getAuth(firebaseApp);
   const googleProvider = new GoogleAuthProvider();
@@ -30,7 +32,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      onLoginSuccess();
+      router.push("/"); // Navigate to the home page
     } catch (err) {
       setError("Failed to log in. Please check your credentials.");
     } finally {
@@ -44,7 +46,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
     try {
       await signInWithPopup(auth, googleProvider);
-      onLoginSuccess();
+      router.push("/"); // Navigate to the home page
     } catch (err) {
       setError("Failed to log in with Google.");
     } finally {
@@ -53,54 +55,76 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
-      <form onSubmit={handleEmailLogin} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-gray-700">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div className="flex items-center justify-center min-h-screen bg-[#f0eae6]  from-orange-100 to-orange-200">
+      <div className="w-full max-w-md">
+        <div className="bg-white shadow-2xl rounded-3xl overflow-hidden">
+          <div className="px-8 py-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+              <p className="text-gray-600 mt-2">
+                Please sign in to your account
+              </p>
+            </div>
+            {error && (
+              <div
+                className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6"
+                role="alert"
+              >
+                <p>{error}</p>
+              </div>
+            )}
+            <form onSubmit={handleEmailLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  type="email"
+                  id="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  type="password"
+                  id="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign in"}
+              </Button>
+            </form>
+            <div className="mt-8">
+              <Separator className="my-4">
+                <span className="px-2 text-gray-500">Or continue with</span>
+              </Separator>
+              <Button
+                onClick={handleGoogleLogin}
+                variant="outline"
+                className="w-full mt-4 bg-white text-gray-700 hover:bg-gray-50"
+              >
+                <FaGoogle className="mr-2" />
+                Google
+              </Button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="password" className="block text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 bg-orange-500 text-white font-semibold rounded-lg"
-          disabled={isLoading}
-        >
-          {isLoading ? "Logging in..." : "Log in"}
-        </button>
-      </form>
-
-      <div className="mt-4 text-center">
-        <p className="text-gray-600">OR</p>
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full py-2 mt-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50"
-          disabled={isLoading}
-        >
-          Continue with Google
-        </button>
+        <p className="text-center text-gray-600 mt-8">
+          Don't have an account?{" "}
+          <a href="#" className="text-orange-500 hover:underline">
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );

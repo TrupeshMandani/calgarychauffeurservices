@@ -1,145 +1,132 @@
-// pages/about.tsx
 "use client";
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import "animate.css";
 
 const About = () => {
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 1.2 } },
+  };
+
+  const slideInFromLeft = {
+    hidden: { x: -100, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 1 } },
+  };
+
+  const slideInFromRight = {
+    hidden: { x: 100, opacity: 0 },
+    visible: { x: 0, opacity: 1, transition: { duration: 1 } },
+  };
+
   return (
-    <div className="about-page">
-      <header className="about-header">
-        <h1>About Calgary Chauffeur Services</h1>
-        <p>Your Trusted Partner in Luxury Chauffeur Transportation</p>
+    <div className="bg-gray-100 min-h-screen">
+      {/* Header Section */}
+      <header
+        className="relative bg-gray-900 text-white text-center py-20"
+        style={{
+          backgroundImage: "url('/path-to-header-image.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          className="relative z-10"
+        >
+          <h1 className="text-5xl font-bold">
+            About Calgary Chauffeur Services
+          </h1>
+          <p className="text-xl mt-4">
+            Your Trusted Partner in Luxury Transportation
+          </p>
+        </motion.div>
+        <div className="absolute inset-0 bg-gray-900 opacity-40 z-0"></div>
       </header>
 
-      <section className="about-content">
-        <div className="content-text">
-          <h2>Who We Are</h2>
-          <p>
+      {/* Content Section */}
+      <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={slideInFromLeft}
+          className="flex flex-col justify-center space-y-6"
+        >
+          <h2 className="text-4xl font-bold text-gray-900">Who We Are</h2>
+          <p className="text-lg text-gray-700 leading-relaxed">
             At Calgary Chauffeur Services, we provide top-notch chauffeur-driven
             car services tailored to meet the needs of both corporate and
-            leisure travelers. With a fleet of premium vehicles and a team of
-            professional, courteous chauffeurs, we ensure a smooth, luxurious,
-            and comfortable experience for all of our clients.
+            leisure travelers...
           </p>
-
-          <p>
-            Established with a commitment to offering high-quality, reliable,
-            and efficient chauffeur services, our business has quickly become a
-            trusted name in Calgary and the surrounding areas. Whether you're
-            headed to an important meeting, a special event, or simply need
-            transportation to and from the airport, we are here to serve you.
-          </p>
-
-          <h2>Our Mission</h2>
-          <p>
+          <h2 className="text-4xl font-bold text-gray-900">Our Mission</h2>
+          <p className="text-lg text-gray-700 leading-relaxed">
             Our mission is to provide exceptional chauffeur services that
-            prioritize safety, comfort, and punctuality. We aim to deliver an
-            experience that goes beyond transportation – one that ensures our
-            clients arrive at their destinations in style, comfort, and on time.
+            prioritize safety, comfort, and punctuality...
           </p>
-
-          <h2>Why Choose Us</h2>
-          <ul>
+          <h2 className="text-4xl font-bold text-gray-900">Why Choose Us</h2>
+          <ul className="list-disc list-inside space-y-4 text-lg text-gray-700">
             <li>
-              <strong>Professional Chauffeurs:</strong> Our drivers are
-              experienced, friendly, and well-trained to deliver a premium
-              experience.
+              <strong>Professional Chauffeurs:</strong> Experienced and
+              courteous drivers.
             </li>
             <li>
-              <strong>Luxury Fleet:</strong> We offer a wide range of luxury
-              vehicles, including sedans, SUVs, and limousines, all maintained
-              to the highest standards.
+              <strong>Luxury Fleet:</strong> A range of premium sedans, SUVs,
+              and limousines.
             </li>
             <li>
-              <strong>Reliable & Punctual:</strong> We understand the importance
-              of timeliness. Our chauffeurs are committed to ensuring you never
-              miss an appointment or flight.
+              <strong>Reliable & Punctual:</strong> Committed to timeliness for
+              all trips.
             </li>
             <li>
-              <strong>24/7 Availability:</strong> Whether it’s an early morning
-              flight or a late-night event, we’re available whenever you need
-              us.
+              <strong>24/7 Availability:</strong> Always ready to serve your
+              needs.
             </li>
           </ul>
-        </div>
+        </motion.div>
 
-        <div className="content-image">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={slideInFromRight}
+          className="relative"
+        >
           <Image
-            src="/images/our-fleet.jpg"
-            alt="Luxury Chauffeur Fleet"
-            width={500}
-            height={300}
+            src="/DALL·E 2025-01-10 16.14.29 - A stunning fleet of luxury vehicles including black sedans, SUVs, and limousines, parked elegantly in a modern setting. The vehicles are polished and .webp"
+            alt="Fleet of Luxury Vehicles"
+            width={600}
+            height={400}
+            className="rounded-lg shadow-lg"
           />
-        </div>
+        </motion.div>
       </section>
 
-      <footer className="about-footer">
-        <p>
-          Contact us today to book your next luxury ride with Calgary Chauffeur
-          Services.
-        </p>
+      {/* Footer Section */}
+      <footer
+        className="relative bg-gray-900 text-white text-center py-10"
+        style={{
+          backgroundImage: "url('/path-to-footer-image.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          className="relative z-10"
+        >
+          <p className="text-lg">
+            Contact us today to book your next luxury ride with Calgary
+            Chauffeur Services.
+          </p>
+        </motion.div>
+        <div className="absolute inset-0 bg-gray-900 opacity-40 z-0"></div>
       </footer>
-
-      <style jsx>{`
-        .about-page {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 0;
-        }
-        .about-header {
-          background-color: #222;
-          color: white;
-          text-align: center;
-          padding: 50px;
-        }
-        .about-header h1 {
-          font-size: 36px;
-          margin: 0;
-        }
-        .about-header p {
-          font-size: 20px;
-          margin-top: 10px;
-        }
-        .about-content {
-          display: flex;
-          justify-content: space-between;
-          padding: 30px;
-        }
-        .content-text {
-          width: 60%;
-        }
-        .content-text h2 {
-          font-size: 28px;
-          color: #333;
-          margin-top: 20px;
-        }
-        .content-text p {
-          font-size: 18px;
-          line-height: 1.6;
-          color: #555;
-        }
-        .content-text ul {
-          list-style-type: none;
-          padding: 0;
-        }
-        .content-text ul li {
-          font-size: 18px;
-          color: #333;
-          margin-bottom: 10px;
-        }
-        .content-image {
-          width: 35%;
-        }
-        .about-footer {
-          background-color: #f8f8f8;
-          text-align: center;
-          padding: 20px;
-          margin-top: 30px;
-        }
-        .about-footer p {
-          font-size: 16px;
-        }
-      `}</style>
     </div>
   );
 };

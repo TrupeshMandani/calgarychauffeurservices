@@ -1,56 +1,61 @@
-'use client'
+"use client";
 
-import React, { useState } from "react"
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
-import { firebaseApp } from "../_utils/Firebase"
-import CardForm from "./CardForm"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { FaGoogle } from 'react-icons/fa'
+import React, { useState } from "react";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { firebaseApp } from "../_utils/Firebase";
+import CardForm from "./CardForm";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { FaGoogle } from "react-icons/fa";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const auth = getAuth(firebaseApp)
-  const googleProvider = new GoogleAuthProvider()
+  const auth = getAuth(firebaseApp);
+  const googleProvider = new GoogleAuthProvider();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      setIsLoggedIn(true)
+      await signInWithEmailAndPassword(auth, email, password);
+      setIsLoggedIn(true);
     } catch (err) {
-      setError("Failed to log in. Please check your credentials.")
+      setError("Failed to log in. Please check your credentials.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
     try {
-      await signInWithPopup(auth, googleProvider)
-      setIsLoggedIn(true)
+      await signInWithPopup(auth, googleProvider);
+      setIsLoggedIn(true);
     } catch (err) {
-      setError("Failed to log in with Google.")
+      setError("Failed to log in with Google.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (isLoggedIn) {
-    return <CardForm />
+    return <CardForm />;
   }
 
   return (
@@ -60,10 +65,15 @@ const LoginPage = () => {
           <div className="px-8 py-12">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
-              <p className="text-gray-600 mt-2">Please sign in to your account</p>
+              <p className="text-gray-600 mt-2">
+                Please sign in to your account
+              </p>
             </div>
             {error && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+              <div
+                className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6"
+                role="alert"
+              >
                 <p>{error}</p>
               </div>
             )}
@@ -90,8 +100,8 @@ const LoginPage = () => {
                   required
                 />
               </div>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white"
                 disabled={isLoading}
               >
@@ -121,8 +131,7 @@ const LoginPage = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
-
+export default LoginPage;
