@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const squareRoutes_1 = __importDefault(require("./routes/squareRoutes"));
 const notificationRoutes_1 = __importDefault(require("./routes/notificationRoutes")); // Ensure this file exists and is correct
-// Initialize Express app
+const helpRequestRoutes_1 = __importDefault(require("./routes/helpRequestRoutes"));
 const app = (0, express_1.default)();
 // Middleware
 app.use((0, cors_1.default)());
@@ -24,6 +24,7 @@ app.get("/api/test", (req, res) => {
 // Use routes from squareRoutes
 app.use("/api", squareRoutes_1.default);
 app.use("/api/notifications", notificationRoutes_1.default);
+app.use("/api/help", helpRequestRoutes_1.default);
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
