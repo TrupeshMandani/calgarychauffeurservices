@@ -17,13 +17,13 @@ const HomePage = () => {
       <NavBar />
       <HeroSection />
       <FeaturedCars />
+      <div className="py-2">
+        <ServicesPage />
+      </div>
       <Hero />
       <div className="px-4 pb-20 bg-gray-50">
         <BookingForm />
       </div>{" "}
-      <div className="py-2">
-        <ServicesPage />
-      </div>
       <div className="py-2"></div>
       <WhyChooseUs />
       <Footer />

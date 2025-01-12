@@ -14,7 +14,8 @@ export function Hero() {
           Welcome to Calgary Chauffeur Servieces
         </h2>
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-widest leading-tight">
-          BOOK <span className="text-amber-500 glow">TAXI</span> FOR YOUR RIDE
+          BOOK <span className="text-amber-500 glow">A LUXURY</span> FOR YOUR
+          RIDE
         </h1>
         <p className="text-lg md:text-xl leading-relaxed">
           Enjoy seamless, reliable transportation wherever you go. Experience

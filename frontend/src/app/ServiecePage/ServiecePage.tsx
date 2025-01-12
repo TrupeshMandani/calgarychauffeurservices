@@ -7,10 +7,13 @@ import "animate.css"; // Import Animate.css
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import services from "./ServicesData"; // Import the services data from a separate file
-import NavBar from "../Components/NavBar";
+
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const ServicesPage = () => {
   // Animation Variants for Framer Motion
+  const router = useRouter();
+
   const textAnimationLeft = {
     hidden: { opacity: 0, x: -50 },
     visible: {
@@ -104,6 +107,7 @@ const ServicesPage = () => {
                   variant="outline"
                   size="lg"
                   className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
+                  onClick={() => router.push("/BookingPage")} // Navigate to /BookingPage
                 >
                   Book Now <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
