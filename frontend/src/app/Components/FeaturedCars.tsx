@@ -72,7 +72,19 @@ const FeaturedCars: React.FC = () => {
             Featured Vehicles
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-            Choose from our selection of premium vehicles
+            Discover our fleet of premium vehicles tailored to meet your needs
+            for comfort, style, and reliability. Whether it's a corporate event,
+            a luxurious ride for your special day, or an everyday journey, we
+            have you covered.
+          </p>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="max-w-4xl mx-auto text-lg text-gray-600">
+            Explore our carefully selected vehicles, each designed to provide
+            the perfect balance of elegance and performance. From sleek sedans
+            to spacious SUVs, our fleet caters to every occasion and ensures a
+            first-class experience.
           </p>
         </div>
 
@@ -111,6 +123,14 @@ const FeaturedCars: React.FC = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="max-w-3xl mx-auto text-lg text-gray-600">
+            Ready to make your reservation? Browse our fleet and book your
+            perfect vehicle today. Our team is dedicated to providing
+            exceptional service to ensure your journey is unforgettable.
+          </p>
         </div>
       </div>
     </div>
