@@ -21,34 +21,44 @@ const FeaturedCars: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { ref, inView } = useInView({
+  const { ref: titleRef, inView: titleInView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
   });
 
-  useEffect(() => {
-    const fetchCars = async () => {
-      try {
-        const response = await fetch("/api/cars");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch cars: ${response.statusText}`);
-        }
-        const data: Car[] = await response.json();
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid data format");
-        }
-        setCars(data);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { ref: introRef, inView: introInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
 
+  const { ref: exploreRef, inView: exploreInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
+  const fetchCars = async () => {
+    try {
+      const response = await fetch("/api/cars");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cars: ${response.statusText}`);
+      }
+      const data: Car[] = await response.json();
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid data format");
+      }
+      setCars(data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCars();
   }, []);
 
@@ -65,9 +75,13 @@ const FeaturedCars: React.FC = () => {
   }
 
   return (
-    <div ref={ref} className="py-12">
+    <div ref={titleRef} className="py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-8">
-        <div className="text-center">
+        <div
+          className={`text-center ${
+            titleInView ? "animate__animated animate__fadeInDown" : "opacity-0"
+          }`}
+        >
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
             Featured Vehicles
           </h2>
@@ -79,7 +93,12 @@ const FeaturedCars: React.FC = () => {
           </p>
         </div>
 
-        <div className="mt-8 text-center">
+        <div
+          ref={introRef}
+          className={`mt-8 text-center ${
+            introInView ? "animate__animated animate__fadeInLeft" : "opacity-0"
+          }`}
+        >
           <p className="max-w-4xl mx-auto text-lg text-gray-600">
             Explore our carefully selected vehicles, each designed to provide
             the perfect balance of elegance and performance. From sleek sedans
@@ -104,7 +123,7 @@ const FeaturedCars: React.FC = () => {
               <SwiperSlide key={car.name}>
                 <div
                   className={`${
-                    inView
+                    titleInView
                       ? "animate__animated animate__backInLeft"
                       : "opacity-0"
                   }`}
@@ -125,7 +144,14 @@ const FeaturedCars: React.FC = () => {
           </Swiper>
         </div>
 
-        <div className="mt-12 text-center">
+        <div
+          ref={exploreRef}
+          className={`mt-12 text-center ${
+            exploreInView
+              ? "animate__animated animate__fadeInRight"
+              : "opacity-0"
+          }`}
+        >
           <p className="max-w-3xl mx-auto text-lg text-gray-600">
             Ready to make your reservation? Browse our fleet and book your
             perfect vehicle today. Our team is dedicated to providing

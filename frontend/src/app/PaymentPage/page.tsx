@@ -116,14 +116,15 @@ export default function PaymentPage() {
               >
                 Booking Information
               </motion.h2>
+
               <div className="space-y-6">
-                {/* Selected Vehicle */}
+                {/* Render Car Information First */}
                 {selectedVehicle && (
                   <motion.div
                     className="flex items-center gap-4 text-gray-800 hover:text-gray-950 transition-colors duration-200"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 0 }}
                     whileHover={{ scale: 1.02 }}
                   >
                     <FaCar className="text-2xl text-amber-600" />
@@ -142,6 +143,7 @@ export default function PaymentPage() {
                   </motion.div>
                 )}
 
+                {/* Render Other Booking Information */}
                 {Object.entries(bookingInfo).map(([key, value], index) => (
                   <motion.div
                     key={key}
