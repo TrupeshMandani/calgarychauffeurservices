@@ -306,7 +306,7 @@ export default function CardForm() {
                 </div>
                 <button
                   onClick={handleSubmitCustomerInfo}
-                  className="bg-yellow-400 text-black px-6 py-2  hover:bg-yellow-500 transition-all duration-300"
+                  className="bg-yellow-400 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition-all duration-300"
                 >
                   Proceed to Payment
                 </button>

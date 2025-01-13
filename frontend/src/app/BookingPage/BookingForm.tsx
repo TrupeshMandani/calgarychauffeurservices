@@ -76,46 +76,9 @@ export function BookingForm() {
     }
   };
 
-  const handlePickupLocationChange = () => {
-    const place = autocompleteRefPickup.current?.getPlace();
-    if (place?.formatted_address && place.geometry?.location) {
-      setPickupLocation(place.formatted_address);
-      setPickupCoords(place.geometry.location.toJSON());
-      if (error) {
-        // Delay clearing the error slightly to avoid flicker
-        setTimeout(() => setError(null), 100);
-      }
-    } else {
-      if (error !== "Invalid pickup location. Please select a valid address.") {
-        setError("Invalid pickup location. Please select a valid address.");
-      }
-    }
-    setDirections(null);
-  };
-
-  const handleDropoffLocationChange = () => {
-    const place = autocompleteRefDropoff.current?.getPlace();
-    if (place?.formatted_address && place.geometry?.location) {
-      setDropoffLocation(place.formatted_address);
-      setDropoffCoords(place.geometry.location.toJSON());
-      if (error) {
-        // Delay clearing the error slightly to avoid flicker
-        setTimeout(() => setError(null), 100);
-      }
-    } else {
-      if (
-        error !== "Invalid drop-off location. Please select a valid address."
-      ) {
-        setError("Invalid drop-off location. Please select a valid address.");
-      }
-    }
-    setDirections(null);
-  };
-
   const validateForm = () => {
     if (!pickupCoords || !dropoffCoords) {
       setError("Please select valid pickup and drop-off locations.");
-      console.log("Invalid Coordinates:", { pickupCoords, dropoffCoords }); // Debug log
       return false;
     }
 
@@ -125,13 +88,50 @@ export function BookingForm() {
       .minute(pickupTime.minute());
 
     if (selectedDateTime.isBefore(now)) {
-      setError("Please select a future date and time for your booking.");
-      console.log("Invalid Date/Time:", { now, selectedDateTime }); // Debug log
+      setError("Please select a time at least 2 hours from now.");
       return false;
     }
 
     setError(null); // Clear error if everything is valid
     return true;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate form fields explicitly
+    if (!pickupLocation.trim() || !dropoffLocation.trim()) {
+      setError("Pickup and Drop-off locations cannot be empty.");
+      return;
+    }
+
+    // Validate coordinates and date/time
+    if (!validateForm()) {
+      return;
+    }
+
+    const bookingId = await saveBookingToFirestore();
+    if (bookingId) {
+      router.push(`/Vehicles?bookingId=${bookingId}`);
+    }
+  };
+
+  const handlePickupLocationChange = () => {
+    const place = autocompleteRefPickup.current?.getPlace();
+    if (place?.formatted_address && place.geometry?.location) {
+      setPickupLocation(place.formatted_address);
+      setPickupCoords(place.geometry.location.toJSON());
+      setError(null); // Clear error
+    }
+  };
+
+  const handleDropoffLocationChange = () => {
+    const place = autocompleteRefDropoff.current?.getPlace();
+    if (place?.formatted_address && place.geometry?.location) {
+      setDropoffLocation(place.formatted_address);
+      setDropoffCoords(place.geometry.location.toJSON());
+      setError(null); // Clear error
+    }
   };
 
   useEffect(() => {
@@ -164,16 +164,6 @@ export function BookingForm() {
 
     calculateRoute();
   }, [pickupCoords, dropoffCoords]);
-
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    const bookingId = await saveBookingToFirestore();
-    if (bookingId) {
-      router.push(`/Vehicles?bookingId=${bookingId}`);
-    }
-  };
 
   return (
     <LoadScript
