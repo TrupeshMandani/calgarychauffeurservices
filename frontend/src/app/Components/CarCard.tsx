@@ -30,6 +30,8 @@ const CarCard: React.FC<CarCardProps> = ({
       <Image
         src={img}
         alt={name}
+        width={50}
+        height={50}
         className="w-full h-50  object-cover"
         data-atropos-offset="-2"
       />
