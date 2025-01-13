@@ -6,11 +6,30 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../_utils/Firebase"; // Adjust this path based on your project structure
 
-declare const Square: any;
+declare const Square: {
+  payments: (
+    appId: string,
+    locationId: string,
+    options?: Record<string, unknown>
+  ) => {
+    card: () => Promise<{
+      attach: (selector: string) => Promise<void>;
+      tokenize: () => Promise<{ status: string; token: string }>;
+    }>;
+  };
+};
+type Card = {
+  attach: (selector: string) => Promise<void>;
+  tokenize: () => Promise<{ status: string; token: string }>;
+  configure?: (options: Record<string, unknown>) => void;
+  destroy?: () => void;
+  detach?: () => void;
+  recalculateSize?: () => void;
+};
 
 export default function CardForm() {
   const [status, setStatus] = useState<string>(""); // Status message for payment process
-  const [card, setCard] = useState<any>(null); // Square Card instance
+  const [card, setCard] = useState<Card | null>(null); // Updated to use Card type or null
   const [showCardForm, setShowCardForm] = useState(false); // Show/hide card form
   const [paymentSuccess, setPaymentSuccess] = useState(false); // Payment success flag
   const [paymentFailed, setPaymentFailed] = useState(false); // Payment failure flag
@@ -238,6 +257,11 @@ export default function CardForm() {
           <div className="p-4 bg-green-100 text-green-800 rounded shadow-md text-center">
             <h2 className="text-xl font-bold mb-2">Payment Successful!</h2>
             <p>Your booking has been confirmed.</p>
+          </div>
+        ) : paymentFailed ? (
+          <div className="p-4 bg-red-100 text-red-800 rounded shadow-md text-center">
+            <h2 className="text-xl font-bold mb-2">Payment Failed!</h2>
+            <p>Please try again or contact support.</p>
           </div>
         ) : (
           <>
