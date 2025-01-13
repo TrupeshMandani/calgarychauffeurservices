@@ -17,7 +17,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative h-48">
-        <Image src={image} alt={title} layout="fill" objectFit="cover" />
+        <Image
+          src={image}
+          alt={title}
+          layout="fill"
+          width={400}
+          height={400}
+          objectFit="cover"
+        />
       </div>
       <div className="p-6">
         <h3 className="text-xl font-semibold mb-2">{title}</h3>
