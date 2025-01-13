@@ -8,7 +8,6 @@ const ContactUs = () => {
   const { ref: heroRef, inView: heroInView } = useInView({ triggerOnce: true });
   const { ref: infoRef, inView: infoInView } = useInView({ triggerOnce: true });
   const { ref: formRef, inView: formInView } = useInView({ triggerOnce: true });
-  const { ref: mapRef, inView: mapInView } = useInView({ triggerOnce: true });
 
   const [formData, setFormData] = useState({
     firstName: "",

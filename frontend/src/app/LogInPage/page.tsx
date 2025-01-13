@@ -33,7 +33,7 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/"); // Navigate to the home page
-    } catch (err) {
+    } catch {
       setError("Failed to log in. Please check your credentials.");
     } finally {
       setIsLoading(false);
@@ -47,7 +47,7 @@ const LoginPage = () => {
     try {
       await signInWithPopup(auth, googleProvider);
       router.push("/"); // Navigate to the home page
-    } catch (err) {
+    } catch {
       setError("Failed to log in with Google.");
     } finally {
       setIsLoading(false);
@@ -120,7 +120,7 @@ const LoginPage = () => {
           </div>
         </div>
         <p className="text-center text-gray-600 mt-8">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a href="#" className="text-orange-500 hover:underline">
             Sign up
           </a>

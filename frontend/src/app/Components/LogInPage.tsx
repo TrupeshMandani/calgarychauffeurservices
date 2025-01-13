@@ -33,7 +33,8 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoggedIn(true);
-    } catch (err) {
+    } catch (error) {
+      console.error("Email login error:", error);
       setError("Failed to log in. Please check your credentials.");
     } finally {
       setIsLoading(false);
@@ -47,7 +48,8 @@ const LoginPage = () => {
     try {
       await signInWithPopup(auth, googleProvider);
       setIsLoggedIn(true);
-    } catch (err) {
+    } catch (error) {
+      console.error("Google login error:", error);
       setError("Failed to log in with Google.");
     } finally {
       setIsLoading(false);
@@ -124,7 +126,7 @@ const LoginPage = () => {
           </div>
         </div>
         <p className="text-center text-gray-600 mt-8">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a href="#" className="text-orange-500 hover:underline">
             Sign up
           </a>

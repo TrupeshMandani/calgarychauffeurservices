@@ -2,6 +2,7 @@
 import React from "react";
 import Atropos from "atropos/react";
 import "atropos/css";
+import Image from "next/image";
 
 interface CarCardProps {
   name: string;
@@ -26,7 +27,7 @@ const CarCard: React.FC<CarCardProps> = ({
       rotateXMax={5} // Reduced max rotation for X-axis
       rotateYMax={5} // Reduced max rotation for Y-axis
     >
-      <img
+      <Image
         src={img}
         alt={name}
         className="w-full h-50  object-cover"

@@ -2,14 +2,12 @@ import React from "react";
 import FeaturedCars from "@/app/Components/FeaturedCars";
 import Footer from "@/app/Components/Footer";
 import HeroSection from "@/app/Components/HeroSection";
-import CarCard from "@/app/Components/CarCard";
+
 import WhyChooseUs from "@/app/Components/WhyChooseUs";
 import NavBar from "@/app/Components/NavBar";
 import { Hero } from "@/app/BookingPage/hero";
 import { BookingForm } from "@/app/BookingPage/BookingForm";
 import ServicesPage from "@/app/ServiecePage/ServiecePage";
-import ContactUs from "@/app/ContactUs/ContactUs";
-import About from "@/app/AboutUs/AboutUs";
 
 const HomePage = () => {
   return (

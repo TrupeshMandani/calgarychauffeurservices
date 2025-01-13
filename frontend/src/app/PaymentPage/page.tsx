@@ -17,13 +17,29 @@ import {
   FaCar,
 } from "react-icons/fa";
 
+// Define types for booking and vehicle information
+interface BookingInfo {
+  pickupLocation: string;
+  dropoffLocation: string;
+  pickupDate: string;
+  pickupTime: string;
+  distance: string;
+  duration: string;
+}
+
+interface Vehicle {
+  name: string;
+  type: string;
+  price: string;
+}
+
 export default function PaymentPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true); // Loading state
   const [showComponent, setShowComponent] = useState<
     "none" | "login" | "guest"
   >("none");
-  const [bookingInfo, setBookingInfo] = useState<any>({
+  const [bookingInfo, setBookingInfo] = useState<BookingInfo>({
     pickupLocation: "N/A",
     dropoffLocation: "N/A",
     pickupDate: "N/A",
@@ -31,7 +47,7 @@ export default function PaymentPage() {
     distance: "N/A",
     duration: "N/A",
   });
-  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
