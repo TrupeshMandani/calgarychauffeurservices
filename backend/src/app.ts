@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import squareRoutes from "./routes/squareRoutes";
@@ -8,8 +7,8 @@ const app = express();
 
 // Middleware
 app.use(cors());
- // Enables cross-origin requests
- app.use(express.json({ limit: "5mb" }));
+// Enables cross-origin requests
+app.use(express.json({ limit: "5mb" }));
 
 // Root route for the API
 app.get("/", (req, res) => {
