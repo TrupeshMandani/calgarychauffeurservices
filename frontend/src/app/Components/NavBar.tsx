@@ -1,9 +1,11 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { firebaseApp } from "../_utils/Firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image"; // Import Image from next/image
 import { motion } from "framer-motion"; // Import motion from Framer Motion
 import { slideInFromTop2 } from "../_utils/motion";
 
@@ -29,6 +31,7 @@ const NavBar: React.FC = () => {
   const handleProfileClick = () => {
     setShowModal(true);
   };
+
   return (
     <motion.nav
       className="absolute z-20 w-full border-b border-gray-300"
@@ -45,7 +48,6 @@ const NavBar: React.FC = () => {
             <Link href="/" className="text-white hover:text-yellow-400">
               Home
             </Link>
-
             <Link
               href="/ServiecePage"
               className="text-white hover:text-yellow-400"
@@ -63,17 +65,24 @@ const NavBar: React.FC = () => {
             </Link>
             <Link
               href="/BookingPage"
-              className="bg-yellow-400 rounded-full text-black px-6 py-2  hover:bg-yellow-500 transition-all duration-300"
+              className="bg-yellow-400 rounded-full text-black px-6 py-2 hover:bg-yellow-500 transition-all duration-300"
             >
               Book Now
             </Link>
             {user ? (
-              <img
-                src={user.photoURL || "/default-user.png"}
-                alt="User"
-                className="w-8 h-8 rounded-full cursor-pointer border-2 border-yellow-400"
+              <div
+                className="cursor-pointer"
                 onClick={handleProfileClick}
-              />
+                title="Profile"
+              >
+                <Image
+                  src={user.photoURL || "/default-user.png"}
+                  alt="User"
+                  width={32}
+                  height={32}
+                  className="rounded-full border-2 border-yellow-400"
+                />
+              </div>
             ) : (
               <Link
                 href="/LogInPage"

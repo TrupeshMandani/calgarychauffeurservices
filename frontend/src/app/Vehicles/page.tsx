@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import { useRouter } from "next/navigation";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../_utils/Firebase"; // Ensure correct path to Firebase configuration
+import { db } from "../_utils/Firebase";
 
 // Import Swiper styles
 import "swiper/css";
@@ -13,23 +13,31 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import CarCard from "../Components/CarCard";
 
+// Define the Car interface
+interface Car {
+  name: string;
+  type: string;
+  price: string;
+  img: string;
+}
+
 const Page = () => {
   const router = useRouter();
-  const [cars, setCars] = useState<any[]>([]);
+  const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch("/chauffeurServices.cars.json"); // Fetch from JSON file in public folder
+        const response = await fetch("/chauffeurServices.cars.json");
         if (!response.ok) {
           throw new Error("Failed to fetch cars");
         }
-        const data = await response.json();
+        const data: Car[] = await response.json(); // Explicitly cast to Car[]
         setCars(data);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (err) {
+        setError((err as Error).message); // Type assertion for the error object
       } finally {
         setLoading(false);
       }
@@ -58,15 +66,15 @@ const Page = () => {
   const sortedCars = cars.sort((a, b) => a.type.localeCompare(b.type));
 
   // Group cars by type
-  const groupedCars = sortedCars.reduce((acc, car) => {
+  const groupedCars = sortedCars.reduce<Record<string, Car[]>>((acc, car) => {
     if (!acc[car.type]) {
       acc[car.type] = [];
     }
     acc[car.type].push(car);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {});
 
-  const handleCarSelect = async (car: any) => {
+  const handleCarSelect = async (car: Car) => {
     const queryParams = new URLSearchParams(window.location.search); // Get booking details from URL
     const bookingId = queryParams.get("bookingId");
 
@@ -79,19 +87,14 @@ const Page = () => {
       // Update Firestore document with the selected vehicle data
       const bookingRef = doc(db, "bookings", bookingId);
       await updateDoc(bookingRef, {
-        selectedVehicle: {
-          name: car.name,
-          type: car.type,
-          price: car.price,
-          img: car.img,
-        },
+        selectedVehicle: car,
       });
 
       console.log("Vehicle added to booking successfully!");
       // Navigate to the Payment Page
       router.push(`/PaymentPage?bookingId=${bookingId}`);
-    } catch (error) {
-      console.error("Error updating booking with selected vehicle: ", error);
+    } catch (err) {
+      console.error("Error updating booking with selected vehicle: ", err);
       alert(
         "Failed to update booking with selected vehicle. Please try again."
       );
@@ -136,32 +139,22 @@ const Page = () => {
                   1024: { slidesPerView: 3, spaceBetween: 40 },
                 }}
               >
-                {groupedCars[carType].map(
-                  (
-                    car: {
-                      name: string;
-                      type: string;
-                      price: string;
-                      img: string;
-                    },
-                    carIndex: React.Key | null | undefined
-                  ) => (
-                    <SwiperSlide key={carIndex} className="pb-16">
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => handleCarSelect(car)}
-                      >
-                        <CarCard
-                          name={car.name}
-                          type={car.type}
-                          price={car.price}
-                          img={car.img}
-                          description={`Enjoy a comfortable and stylish ride in our ${car.name}.`}
-                        />
-                      </div>
-                    </SwiperSlide>
-                  )
-                )}
+                {groupedCars[carType].map((car, carIndex) => (
+                  <SwiperSlide key={carIndex} className="pb-16">
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleCarSelect(car)}
+                    >
+                      <CarCard
+                        name={car.name}
+                        type={car.type}
+                        price={car.price}
+                        img={car.img}
+                        description={`Enjoy a comfortable and stylish ride in our ${car.name}.`}
+                      />
+                    </div>
+                  </SwiperSlide>
+                ))}
               </Swiper>
 
               {/* Navigation buttons */}

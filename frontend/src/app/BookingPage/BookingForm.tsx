@@ -71,7 +71,11 @@ export function BookingForm() {
       const docRef = await addDoc(collection(db, "bookings"), bookingData);
       return docRef.id;
     } catch (error) {
-      setError("Failed to save booking. Please try again.");
+      if (error instanceof Error) {
+        setError(`Failed to save booking. Error: ${error.message}`);
+      } else {
+        setError("Failed to save booking. An unknown error occurred.");
+      }
       return null;
     }
   };

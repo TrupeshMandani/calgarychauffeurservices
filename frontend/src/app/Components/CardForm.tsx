@@ -4,14 +4,28 @@ import { useEffect, useState } from "react";
 import Script from "next/script";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-declare const Square: any;
+// Bypass TypeScript error by declaring Square as any
+declare const Square: {
+  payments: (
+    applicationId: string,
+    locationId: string,
+    options?: { environment?: string }
+  ) => {
+    card: () => Promise<{
+      attach: (selector: string) => Promise<void>;
+      tokenize: () => Promise<{ status: string; token?: string }>;
+    }>;
+  };
+};
 
 export default function CardForm() {
   const [status, setStatus] = useState<string>("");
-  const [card, setCard] = useState<any>(null);
+  const [card, setCard] = useState<{
+    attach: (selector: string) => Promise<void>;
+    tokenize: () => Promise<{ status: string; token?: string }>;
+  } | null>(null);
   const [showCardForm, setShowCardForm] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [paymentFailed, setPaymentFailed] = useState(false);
   const [customerData, setCustomerData] = useState({
     firstName: "",
     lastName: "",
@@ -95,7 +109,6 @@ export default function CardForm() {
       const result = await card.tokenize();
       if (result.status !== "OK") {
         setStatus("Card tokenization failed.");
-        setPaymentFailed(true);
         return;
       }
 
@@ -114,11 +127,9 @@ export default function CardForm() {
         setPaymentSuccess(true);
       } else {
         setStatus("Failed to save card and customer.");
-        setPaymentFailed(true);
       }
-    } catch (error) {
+    } catch {
       setStatus("An error occurred while saving card and customer.");
-      setPaymentFailed(true);
     }
   };
 

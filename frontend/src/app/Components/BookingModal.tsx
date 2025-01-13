@@ -1,8 +1,15 @@
+interface BookingData {
+  name: string;
+  email: string;
+  phone: string;
+  pickupDate: string;
+  returnDate: string;
+}
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: BookingData) => void;
 }
 
 const BookingModal: React.FC<BookingModalProps> = ({
@@ -15,13 +22,17 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
-    const data = {
-      name: form.name.valueOf,
-      email: form.email.value,
-      phone: form.phone.value,
-      pickupDate: form.pickupDate.value,
-      returnDate: form.returnDate.value,
+
+    const data: BookingData = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
+      pickupDate: (form.elements.namedItem("pickupDate") as HTMLInputElement)
+        .value,
+      returnDate: (form.elements.namedItem("returnDate") as HTMLInputElement)
+        .value,
     };
+
     onSubmit(data);
     onClose();
   };
