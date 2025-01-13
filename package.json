@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "express": "^4.21.2",
     "square": "^39.1.1",
     "uuid": "^11.0.3"
   }
