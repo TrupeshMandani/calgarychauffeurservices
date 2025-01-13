@@ -63,7 +63,7 @@ const NavBar: React.FC = () => {
             </Link>
             <Link
               href="/BookingPage"
-              className="bg-yellow-400 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition-all duration-300"
+              className="bg-yellow-400 rounded-full text-black px-6 py-2  hover:bg-yellow-500 transition-all duration-300"
             >
               Book Now
             </Link>

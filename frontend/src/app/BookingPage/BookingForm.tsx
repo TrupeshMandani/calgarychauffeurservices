@@ -9,7 +9,13 @@ import {
   DirectionsRenderer,
   Libraries,
 } from "@react-google-maps/api";
-import { FaMapMarkerAlt, FaCar, FaClock, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaCar,
+  FaClock,
+  FaCalendarAlt,
+  FaTimes,
+} from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,7 +26,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../_utils/Firebase"; // Update the path to your Firebase configuration
+import { db } from "../_utils/Firebase";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBoTWqBLxUZU1wKFJIsVJjjgKPxixwIeDI";
 const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
@@ -30,7 +36,7 @@ export function BookingForm() {
   const [pickupTime, setPickupTime] = useState(dayjs());
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const [pickupCoords, setPickupCoords] =
     useState<google.maps.LatLngLiteral | null>(null);
@@ -63,104 +69,44 @@ export function BookingForm() {
 
     try {
       const docRef = await addDoc(collection(db, "bookings"), bookingData);
-      console.log("Booking saved with ID: ", docRef.id);
       return docRef.id;
     } catch (error) {
-      console.error("Error saving booking: ", error);
       setError("Failed to save booking. Please try again.");
       return null;
     }
   };
 
-  const handlePickupLocationChange = () => {
-    const place = autocompleteRefPickup.current?.getPlace();
-    if (place) {
-      setPickupLocation(place.formatted_address || "");
-      setPickupCoords(place.geometry?.location?.toJSON() || null);
-      setError("");
+  const validateForm = () => {
+    if (!pickupCoords || !dropoffCoords) {
+      setError("Please select valid pickup and drop-off locations.");
+      return false;
     }
-    setDirections(null);
-  };
 
-  const handleDropoffLocationChange = () => {
-    const place = autocompleteRefDropoff.current?.getPlace();
-    if (place) {
-      setDropoffLocation(place.formatted_address || "");
-      setDropoffCoords(place.geometry?.location?.toJSON() || null);
-      setError("");
-    }
-    setDirections(null);
-  };
-
-  const validateDateTime = () => {
     const now = dayjs();
     const selectedDateTime = pickupDate
       .hour(pickupTime.hour())
       .minute(pickupTime.minute());
 
     if (selectedDateTime.isBefore(now)) {
-      setError("Please select a future date and time for your booking.");
+      setError("Please select a time at least 2 hours from now.");
       return false;
     }
+
+    setError(null); // Clear error if everything is valid
     return true;
   };
-
-  useEffect(() => {
-    const calculateRoute = async () => {
-      if (!pickupCoords || !dropoffCoords) return;
-
-      const directionsService = new google.maps.DirectionsService();
-
-      try {
-        const result = await new Promise<google.maps.DirectionsResult>(
-          (resolve, reject) => {
-            directionsService.route(
-              {
-                origin: pickupCoords,
-                destination: dropoffCoords,
-                travelMode: google.maps.TravelMode.DRIVING,
-              },
-              (response, status) => {
-                if (status === google.maps.DirectionsStatus.OK && response) {
-                  resolve(response);
-                } else {
-                  reject(status);
-                }
-              }
-            );
-          }
-        );
-
-        setDirections(result);
-        const leg = result.routes[0]?.legs[0];
-        if (leg) {
-          setDistance(leg.distance?.text || "N/A");
-          setDuration(leg.duration?.text || "N/A");
-        }
-        setError("");
-      } catch (status) {
-        console.error("Directions request failed:", status);
-        setError(
-          "Unable to calculate route. Please check the addresses and try again."
-        );
-        setDirections(null);
-        setDistance("");
-        setDuration("");
-      }
-    };
-
-    calculateRoute();
-  }, [pickupCoords, dropoffCoords]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!pickupCoords || !dropoffCoords || !pickupDate || !pickupTime) {
-      setError("Please fill in all fields before proceeding.");
+    // Validate form fields explicitly
+    if (!pickupLocation.trim() || !dropoffLocation.trim()) {
+      setError("Pickup and Drop-off locations cannot be empty.");
       return;
     }
 
-    if (!validateDateTime()) {
+    // Validate coordinates and date/time
+    if (!validateForm()) {
       return;
     }
 
@@ -169,6 +115,55 @@ export function BookingForm() {
       router.push(`/Vehicles?bookingId=${bookingId}`);
     }
   };
+
+  const handlePickupLocationChange = () => {
+    const place = autocompleteRefPickup.current?.getPlace();
+    if (place?.formatted_address && place.geometry?.location) {
+      setPickupLocation(place.formatted_address);
+      setPickupCoords(place.geometry.location.toJSON());
+      setError(null); // Clear error
+    }
+  };
+
+  const handleDropoffLocationChange = () => {
+    const place = autocompleteRefDropoff.current?.getPlace();
+    if (place?.formatted_address && place.geometry?.location) {
+      setDropoffLocation(place.formatted_address);
+      setDropoffCoords(place.geometry.location.toJSON());
+      setError(null); // Clear error
+    }
+  };
+
+  useEffect(() => {
+    const calculateRoute = async () => {
+      if (!pickupCoords || !dropoffCoords) return;
+
+      console.log("Calculating Route:", { pickupCoords, dropoffCoords }); // Debug log
+
+      const directionsService = new google.maps.DirectionsService();
+
+      try {
+        const result = await directionsService.route({
+          origin: pickupCoords,
+          destination: dropoffCoords,
+          travelMode: google.maps.TravelMode.DRIVING,
+        });
+        setDirections(result);
+
+        const leg = result.routes[0]?.legs[0];
+        if (leg) {
+          setDistance(leg.distance?.text || "N/A");
+          setDuration(leg.duration?.text || "N/A");
+          setError(null); // Clear error on successful route calculation
+        }
+      } catch (err) {
+        console.error("Route Calculation Error:", err); // Debug log
+        setError("Unable to calculate route. Please check the addresses.");
+      }
+    };
+
+    calculateRoute();
+  }, [pickupCoords, dropoffCoords]);
 
   return (
     <LoadScript
@@ -187,11 +182,24 @@ export function BookingForm() {
               Book Your Ride
             </h2>
             {error && (
-              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-                {error}
-              </div>
+              <motion.div
+                className="mb-4 p-3 bg-red-100 text-red-700 rounded-md flex justify-between items-center"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                <span>{error}</span>
+                <button
+                  className="text-xl"
+                  onClick={() => setError(null)}
+                  aria-label="Dismiss error"
+                >
+                  <FaTimes />
+                </button>
+              </motion.div>
             )}
             <form className="space-y-6" onSubmit={handleFormSubmit}>
+              {/* Form fields */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label

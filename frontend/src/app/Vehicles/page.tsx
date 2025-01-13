@@ -22,7 +22,7 @@ const Page = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch("/api/cars");
+        const response = await fetch("/chauffeurServices.cars.json"); // Fetch from JSON file in public folder
         if (!response.ok) {
           throw new Error("Failed to fetch cars");
         }

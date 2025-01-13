@@ -55,7 +55,7 @@ const HeroSection: React.FC = () => {
           className="mt-6"
         >
           <a
-            href="/book"
+            href="./BookingPage"
             className="px-8 py-3 font-medium text-black bg-yellow-400 rounded-md shadow hover:bg-yellow-500 hover:scale-105 transition-transform duration-300"
           >
             Explore More

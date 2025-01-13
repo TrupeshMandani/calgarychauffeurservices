@@ -145,23 +145,25 @@ export default function CardForm() {
 
       const cardToken = result.token;
 
-      const saveCardResponse = await fetch("http://localhost:3000/api/save-card", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cardToken,
-          customerData,
-        }),
-      });
-      
-  
+      const saveCardResponse = await fetch(
+        "http://localhost:3000/api/save-card",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cardToken,
+            customerData,
+          }),
+        }
+      );
+
       const saveCardData = await saveCardResponse.json();
       if (!saveCardData.success) {
         setStatus("Failed to save card and customer.");
         setPaymentFailed(true);
         return;
       }
-  
+
       setStatus("Payment successful! Processing notifications...");
 
       // Step 2: Notify customer and client
@@ -304,7 +306,7 @@ export default function CardForm() {
                 </div>
                 <button
                   onClick={handleSubmitCustomerInfo}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                  className="bg-yellow-400 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition-all duration-300"
                 >
                   Proceed to Payment
                 </button>
@@ -313,7 +315,9 @@ export default function CardForm() {
             ) : (
               <>
                 <div className="mb-4 p-4 bg-gray-100 rounded">
-                  <h3 className="text-lg font-bold mb-2">Customer Information</h3>
+                  <h3 className="text-lg font-bold mb-2">
+                    Customer Information
+                  </h3>
                   <p>
                     <strong>First Name:</strong> {customerData.firstName}
                   </p>
